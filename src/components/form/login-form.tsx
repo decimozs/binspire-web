@@ -59,6 +59,7 @@ export default function LoginForm() {
         return;
       }
 
+      console.log("login successfully");
       successSonner("Login successful");
     },
   });
