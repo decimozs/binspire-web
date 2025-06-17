@@ -10,7 +10,7 @@ import { FormFieldError } from "./form-field-error";
 import { errorSonner, successSonner, warningSonner } from "../ui/sonner";
 import Logo from "../core/logo";
 import LegalPoliciesFooter from "../core/footer/legal-policies-footer";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 const loginFormSchema = z.object({
   email: z
@@ -41,6 +41,7 @@ const mockUsers = [
 
 export default function LoginForm() {
   const id = useId();
+  const navigate = useNavigate({ from: "/" });
 
   const form = useForm({
     ...formOpts,
@@ -59,8 +60,10 @@ export default function LoginForm() {
         return;
       }
 
-      console.log("login successfully");
       successSonner("Login successful");
+      return navigate({
+        to: "/dashboard",
+      });
     },
   });
 
