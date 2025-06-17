@@ -94,7 +94,7 @@ const TermsOfService = () => {
       <DialogTrigger asChild>
         <span className="underline cursor-pointer">Terms of Service</span>
       </DialogTrigger>
-      <DialogContent className="flex flex-col gap-0 p-0 sm:max-h-[min(640px,80vh)] sm:max-w-lg [&>button:last-child]:top-3.5">
+      <DialogContent className="flex flex-col gap-0 h-[600px] p-0 sm:max-h-[min(640px,80vh)] sm:max-w-lg [&>button:last-child]:top-3.5">
         <DialogHeader className="contents space-y-0 text-left">
           <DialogTitle className="border-b px-6 py-4 text-base">
             Terms & Conditions
