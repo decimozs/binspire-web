@@ -11,7 +11,7 @@ export const Route = createRootRoute({
 function RootComponentRoute() {
   return (
     <ThemeProvider>
-      <Toaster />
+      <Toaster position="top-center" />
       <ThemeColorSync />
       <Outlet />
       <TanStackRouterDevtools />
