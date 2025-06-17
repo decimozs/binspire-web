@@ -16,6 +16,9 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
+      devOptions: {
+        enabled: true,
+      },
       manifest: {
         name: "Binspire",
         short_name: "Binspire",

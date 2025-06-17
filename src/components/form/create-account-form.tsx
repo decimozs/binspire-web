@@ -127,15 +127,15 @@ export default function CreateAccountForm() {
           <Card>
             <CardHeader>
               <CardTitle>Account Details</CardTitle>
-              <div className="grid grid-cols-[80px_1fr]">
+              <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Name</p>
                 <CardDescription>{mockData.name}</CardDescription>
               </div>
-              <div className="grid grid-cols-[80px_1fr]">
+              <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Email</p>
                 <CardDescription>{mockData.email}</CardDescription>
               </div>
-              <div className="grid grid-cols-[80px_1fr]">
+              <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Role</p>
                 <CardDescription>{mockData.role}</CardDescription>
               </div>

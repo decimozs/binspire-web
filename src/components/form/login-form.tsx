@@ -165,7 +165,7 @@ export default function LoginForm() {
             </Label>
           </div>
           <Link
-            to="/auth/create-account"
+            to="/auth/email-verification"
             className="text-sm underline hover:no-underline font-medium"
           >
             Forgot password?
