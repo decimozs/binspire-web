@@ -1,3 +1,4 @@
+import LoginForm from "@/components/form/login-form";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
@@ -6,8 +7,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
-    </div>
+    <main className="h-screen flex items-center justify-center">
+      <LoginForm />
+    </main>
   );
 }
