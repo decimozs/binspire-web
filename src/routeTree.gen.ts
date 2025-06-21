@@ -9,22 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
+import { Route as DashboardMapRouteImport } from './routes/dashboard/map'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRequestAccessRouteImport } from './routes/auth/request-access'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
 import { Route as AuthCreateAccountRouteImport } from './routes/auth/create-account'
 
+const DashboardRouteRoute = DashboardRouteRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardIndexRoute = DashboardIndexRouteImport.update({
-  id: '/dashboard/',
-  path: '/dashboard/',
-  getParentRoute: () => rootRouteImport,
+const DashboardMapRoute = DashboardMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => DashboardRouteRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/auth/reset-password',
@@ -49,67 +55,80 @@ const AuthCreateAccountRoute = AuthCreateAccountRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/auth/create-account': typeof AuthCreateAccountRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/map': typeof DashboardMapRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/auth/create-account': typeof AuthCreateAccountRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/map': typeof DashboardMapRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRouteRouteWithChildren
   '/auth/create-account': typeof AuthCreateAccountRoute
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
-  '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/map': typeof DashboardMapRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dashboard'
     | '/auth/create-account'
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
-    | '/dashboard'
+    | '/dashboard/map'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/dashboard'
     | '/auth/create-account'
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
-    | '/dashboard'
+    | '/dashboard/map'
   id:
     | '__root__'
     | '/'
+    | '/dashboard'
     | '/auth/create-account'
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
-    | '/dashboard/'
+    | '/dashboard/map'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DashboardRouteRoute: typeof DashboardRouteRouteWithChildren
   AuthCreateAccountRoute: typeof AuthCreateAccountRoute
   AuthEmailVerificationRoute: typeof AuthEmailVerificationRoute
   AuthRequestAccessRoute: typeof AuthRequestAccessRoute
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -117,12 +136,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard/': {
-      id: '/dashboard/'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardIndexRouteImport
-      parentRoute: typeof rootRouteImport
+    '/dashboard/map': {
+      id: '/dashboard/map'
+      path: '/map'
+      fullPath: '/dashboard/map'
+      preLoaderRoute: typeof DashboardMapRouteImport
+      parentRoute: typeof DashboardRouteRoute
     }
     '/auth/reset-password': {
       id: '/auth/reset-password'
@@ -155,13 +174,25 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardRouteRouteChildren {
+  DashboardMapRoute: typeof DashboardMapRoute
+}
+
+const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardMapRoute: DashboardMapRoute,
+}
+
+const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(
+  DashboardRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DashboardRouteRoute: DashboardRouteRouteWithChildren,
   AuthCreateAccountRoute: AuthCreateAccountRoute,
   AuthEmailVerificationRoute: AuthEmailVerificationRoute,
   AuthRequestAccessRoute: AuthRequestAccessRoute,
   AuthResetPasswordRoute: AuthResetPasswordRoute,
-  DashboardIndexRoute: DashboardIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

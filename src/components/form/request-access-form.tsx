@@ -8,13 +8,15 @@ import { roleValues } from "@/lib/constants";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
 import { useCharacterLimit } from "@/hooks/use-character-limit";
-import { MailIcon } from "lucide-react";
+import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FormFieldError } from "./form-field-error";
 import Logo from "../core/logo";
 import { Link } from "@tanstack/react-router";
+import { useRequestAccess } from "@/hooks/auth/use-auth";
 
 export const requestAccessFormSchema = z.object({
+  orgId: z.string().min(1, { message: "Org id is required" }),
   name: z.string().min(1, { message: "Name is required" }),
   email: z
     .string()
@@ -29,9 +31,10 @@ export const requestAccessFormSchema = z.object({
   }),
 });
 
-type RequestAccessFormFields = z.infer<typeof requestAccessFormSchema>;
+export type RequestAccessFormFields = z.infer<typeof requestAccessFormSchema>;
 
 const defaultValues: RequestAccessFormFields = {
+  orgId: "1",
   name: "",
   email: "",
   reason: "",
@@ -47,11 +50,14 @@ const formOpts = formOptions({
 
 export default function RequestAccessForm() {
   const id = useId();
+  const requestAccess = useRequestAccess();
+  const isPending = requestAccess.isPending;
+
   const form = useForm({
     ...formOpts,
-    onSubmit: async ({ value }) => {
-      console.log(`Errors: ${form.getAllErrors()}`);
-      console.log(value);
+    onSubmit: async ({ value, formApi }) => {
+      await requestAccess.mutateAsync(value);
+      formApi.reset();
     },
   });
 
@@ -131,7 +137,14 @@ export default function RequestAccessForm() {
           }}
         />
         <div className="space-y-2">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && (
+              <LoaderCircleIcon
+                className="-ms-1 animate-spin"
+                size={16}
+                aria-hidden="true"
+              />
+            )}
             Request Access
           </Button>
           <Link to="/">

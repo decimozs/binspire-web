@@ -5,12 +5,12 @@ import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { Input } from "../ui/input";
 import { useId, useState } from "react";
-import { EyeIcon, EyeOffIcon, MailIcon } from "lucide-react";
+import { EyeIcon, EyeOffIcon, LoaderCircleIcon, MailIcon } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
-import { errorSonner, successSonner, warningSonner } from "../ui/sonner";
 import Logo from "../core/logo";
 import LegalPoliciesFooter from "../core/footer/legal-policies-footer";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
+import { useLogin } from "@/hooks/auth/use-auth";
 
 const loginFormSchema = z.object({
   email: z
@@ -20,7 +20,7 @@ const loginFormSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-type LoginFormFields = z.infer<typeof loginFormSchema>;
+export type LoginFormFields = z.infer<typeof loginFormSchema>;
 
 const defaultValues: LoginFormFields = {
   email: "",
@@ -34,41 +34,20 @@ const formOpts = formOptions({
   },
 });
 
-const mockUsers = [
-  { email: "test@example.com", password: "secret123" },
-  { email: "admin@example.com", password: "adminpass" },
-];
-
 export default function LoginForm() {
   const id = useId();
-  const navigate = useNavigate({ from: "/" });
+  const login = useLogin();
+  const isPending = login.isPending;
 
   const form = useForm({
     ...formOpts,
-    onSubmit: async ({ value }) => {
-      const { email, password } = value;
-
-      const user = mockUsers.find((u) => u.email === email);
-
-      if (!user) {
-        warningSonner("Email not found");
-        return;
-      }
-
-      if (user.password !== password) {
-        errorSonner("Invalid password");
-        return;
-      }
-
-      successSonner("Login successful");
-      return navigate({
-        to: "/dashboard",
-      });
+    onSubmit: async ({ value, formApi }) => {
+      await login.mutateAsync(value);
+      formApi.reset();
     },
   });
 
   const [isVisible, setIsVisible] = useState<boolean>(false);
-
   const toggleVisibility = () => setIsVisible((prevState) => !prevState);
 
   return (
@@ -176,7 +155,14 @@ export default function LoginForm() {
           </Link>
         </div>
         <div className="space-y-2">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && (
+              <LoaderCircleIcon
+                className="-ms-1 animate-spin"
+                size={16}
+                aria-hidden="true"
+              />
+            )}
             Login
           </Button>
           <div className="before:bg-border after:bg-border flex items-center gap-3 before:h-px before:flex-1 after:h-px after:flex-1">

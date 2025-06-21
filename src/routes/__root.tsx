@@ -1,3 +1,4 @@
+import QueryProvider from "@/components/provider/query-provider";
 import { ThemeProvider } from "@/components/provider/theme-provider";
 import { ThemeColorSync } from "@/components/theme/theme-color-sync";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
@@ -13,7 +14,9 @@ function RootComponentRoute() {
     <ThemeProvider>
       <Toaster position="top-center" />
       <ThemeColorSync />
-      <Outlet />
+      <QueryProvider>
+        <Outlet />
+      </QueryProvider>
       <TanStackRouterDevtools />
     </ThemeProvider>
   );
