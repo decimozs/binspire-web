@@ -1,5 +1,6 @@
 import { errorSonner, warningSonner } from "@/components/ui/sonner";
 import axios from "axios";
+import { ORG_ID } from "./constants";
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -7,7 +8,7 @@ const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use(function (config) {
-  const orgId = "64HLr9491PQ5g89-6SJ72";
+  const orgId = ORG_ID;
   config.headers["X-Org-Id"] = orgId;
   return config;
 });

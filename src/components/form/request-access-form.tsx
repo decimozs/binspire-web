@@ -3,8 +3,8 @@ import z from "zod";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useId } from "react";
-import { roleValues } from "@/lib/constants";
+import { useEffect, useId } from "react";
+import { ORG_ID, roleValues } from "@/lib/constants";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
 import { useCharacterLimit } from "@/hooks/use-character-limit";
@@ -34,7 +34,7 @@ export const requestAccessFormSchema = z.object({
 export type RequestAccessFormFields = z.infer<typeof requestAccessFormSchema>;
 
 const defaultValues: RequestAccessFormFields = {
-  orgId: "1",
+  orgId: ORG_ID,
   name: "",
   email: "",
   reason: "",
@@ -163,7 +163,6 @@ export const RoleRadioGroup = ({ f }: { f: AnyFieldApi }) => {
   return (
     <RadioGroup
       className="gap-2"
-      defaultValue="admin"
       onValueChange={(v) => f.handleChange(v)}
       value={f.state.value}
     >
@@ -268,6 +267,12 @@ const RequestAccessReasonTextArea = ({ f }: { f: AnyFieldApi }) => {
     handleChange(e);
     f.handleChange(e.target.value);
   };
+
+  useEffect(() => {
+    handleChange({
+      target: { value: f.state.value },
+    } as React.ChangeEvent<HTMLTextAreaElement>);
+  }, [f.state.value]);
 
   return (
     <div className="*:not-first:mt-2">
