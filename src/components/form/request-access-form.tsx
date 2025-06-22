@@ -13,7 +13,7 @@ import type { AnyFieldApi } from "@tanstack/react-form";
 import { FormFieldError } from "./form-field-error";
 import Logo from "../core/logo";
 import { Link } from "@tanstack/react-router";
-import { useRequestAccess } from "@/hooks/auth/use-auth";
+import { useRequestAccess } from "@/hooks/use-auth";
 
 export const requestAccessFormSchema = z.object({
   orgId: z.string().min(1, { message: "Org id is required" }),

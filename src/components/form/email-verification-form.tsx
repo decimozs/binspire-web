@@ -4,23 +4,28 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useId } from "react";
-import { MailIcon } from "lucide-react";
+import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
-import { successSonner } from "../ui/sonner";
 import Logo from "../core/logo";
 import { Link } from "@tanstack/react-router";
+import { useEmail } from "@/hooks/use-email";
+import { verificationTypeValues } from "@/lib/constants";
 
 const emailVerificationSchema = z.object({
   email: z
     .string()
     .min(1, { message: "Email is required" })
     .email({ message: "Please enter a valid email address" }),
+  type: z.enum(verificationTypeValues),
 });
 
-type EmailVerificationFormFields = z.infer<typeof emailVerificationSchema>;
+export type EmailVerificationFormFields = z.infer<
+  typeof emailVerificationSchema
+>;
 
 const defaultValues: EmailVerificationFormFields = {
   email: "",
+  type: "email-verification",
 };
 
 const formOpts = formOptions({
@@ -32,12 +37,14 @@ const formOpts = formOptions({
 
 export default function EmailVerificationForm() {
   const id = useId();
+  const email = useEmail();
+  const isPending = email.isPending;
 
   const form = useForm({
     ...formOpts,
-    onSubmit: async ({ value }) => {
-      console.log("Email verification submitted:", value.email);
-      successSonner("Verification email sent. Please check your inbox.");
+    onSubmit: async ({ value, formApi }) => {
+      await email.mutateAsync(value);
+      formApi.reset();
     },
   });
 
@@ -85,7 +92,14 @@ export default function EmailVerificationForm() {
           />
         </div>
         <div className="space-y-2">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && (
+              <LoaderCircleIcon
+                className="-ms-1 animate-spin"
+                size={16}
+                aria-hidden="true"
+              />
+            )}
             Send Verification
           </Button>
           <Link to="/">

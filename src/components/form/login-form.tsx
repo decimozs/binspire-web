@@ -10,7 +10,7 @@ import { FormFieldError } from "./form-field-error";
 import Logo from "../core/logo";
 import LegalPoliciesFooter from "../core/footer/legal-policies-footer";
 import { Link } from "@tanstack/react-router";
-import { useLogin } from "@/hooks/auth/use-auth";
+import { useLogin } from "@/hooks/use-auth";
 
 const loginFormSchema = z.object({
   email: z
