@@ -9,10 +9,8 @@ export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
     try {
       const session = await apiClient.get("/auth/session");
-      console.log(session.data);
       useSessionStore.getState().setSession(session.data?.data);
-    } catch (error) {
-      console.log(error);
+    } catch {
       throw redirect({ to: "/" });
     }
   },

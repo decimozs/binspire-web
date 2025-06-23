@@ -3,7 +3,7 @@ import z from "zod";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { useEffect, useId } from "react";
+import { useEffect, useId, useState } from "react";
 import { ORG_ID, roleValues } from "@/lib/constants";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
@@ -52,108 +52,128 @@ export default function RequestAccessForm() {
   const id = useId();
   const requestAccess = useRequestAccess();
   const isPending = requestAccess.isPending;
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const form = useForm({
     ...formOpts,
     onSubmit: async ({ value, formApi }) => {
       await requestAccess.mutateAsync(value);
       formApi.reset();
+      setIsSuccess(true);
     },
   });
 
   return (
     <div className="w-full max-w-md p-8 space-y-5">
-      <div className="flex flex-col items-center gap-2">
-        <Logo />
-        <div className="flex items-center flex-col gap-2">
-          <h1 className="text-lg font-medium">Request Access</h1>
-          <p className="text-sm wrap text-muted-foreground">
-            Enter your credentials to login to your account.
+      {isSuccess ? (
+        <div className="flex flex-col items-center gap-4 text-center">
+          <Logo status="success" />
+          <h1 className="text-lg font-medium">Request Submitted</h1>
+          <p className="text-muted-foreground text-sm">
+            Your access request has been successfully submitted. Please check
+            your email for updates.
           </p>
-        </div>
-      </div>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }}
-        className="space-y-5"
-      >
-        <div className="space-y-4">
-          <form.Field
-            name="name"
-            children={(f) => {
-              return (
-                <div className="*:not-first:mt-2">
-                  <Label htmlFor={`${id}-name`}>Name</Label>
-                  <Input
-                    id={`${id}-name`}
-                    placeholder="Enter your full name"
-                    type="text"
-                    value={f.state.value}
-                    onChange={(e) => f.handleChange(e.target.value)}
-                    aria-invalid={f.state.meta.errors.length > 0}
-                  />
-                  <FormFieldError field={f} />
-                </div>
-              );
-            }}
-          />
-          <form.Field
-            name="email"
-            children={(f) => {
-              return (
-                <div className="*:not-first:mt-2">
-                  <Label htmlFor={`${id}-email`}>Email</Label>
-                  <div className="relative">
-                    <Input
-                      id={`${id}-email`}
-                      placeholder="Enter your email"
-                      value={f.state.value}
-                      onChange={(e) => f.handleChange(e.target.value)}
-                      aria-invalid={f.state.meta.errors.length > 0}
-                    />
-                    <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 peer-disabled:opacity-50">
-                      <MailIcon size={16} aria-hidden="true" />
-                    </div>
-                  </div>
-                  <FormFieldError field={f} />
-                </div>
-              );
-            }}
-          />
-          <form.Field
-            name="reason"
-            children={(f) => {
-              return <RequestAccessReasonTextArea f={f} />;
-            }}
-          />
-        </div>
-        <form.Field
-          name="role"
-          children={(f) => {
-            return <RoleRadioGroup f={f} />;
-          }}
-        />
-        <div className="space-y-2">
-          <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending && (
-              <LoaderCircleIcon
-                className="-ms-1 animate-spin"
-                size={16}
-                aria-hidden="true"
-              />
-            )}
-            Request Access
-          </Button>
           <Link to="/">
-            <Button type="button" className="w-full" variant="ghost">
-              Back
+            <Button type="button" className="w-full mt-4">
+              Back to Home
             </Button>
           </Link>
         </div>
-      </form>
+      ) : (
+        <>
+          <div className="flex flex-col items-center gap-2">
+            <Logo />
+            <div className="flex items-center flex-col gap-2">
+              <h1 className="text-lg font-medium">Request Access</h1>
+              <p className="text-sm wrap text-muted-foreground">
+                Enter your credentials to login to your account.
+              </p>
+            </div>
+          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+            className="space-y-5"
+          >
+            <div className="space-y-4">
+              <form.Field
+                name="name"
+                children={(f) => {
+                  return (
+                    <div className="*:not-first:mt-2">
+                      <Label htmlFor={`${id}-name`}>Name</Label>
+                      <Input
+                        id={`${id}-name`}
+                        placeholder="Enter your full name"
+                        type="text"
+                        value={f.state.value}
+                        onChange={(e) => f.handleChange(e.target.value)}
+                        aria-invalid={f.state.meta.errors.length > 0}
+                      />
+                      <FormFieldError field={f} />
+                    </div>
+                  );
+                }}
+              />
+              <form.Field
+                name="email"
+                children={(f) => {
+                  return (
+                    <div className="*:not-first:mt-2">
+                      <Label htmlFor={`${id}-email`}>Email</Label>
+                      <div className="relative">
+                        <Input
+                          id={`${id}-email`}
+                          placeholder="Enter your email"
+                          value={f.state.value}
+                          onChange={(e) => f.handleChange(e.target.value)}
+                          aria-invalid={f.state.meta.errors.length > 0}
+                        />
+                        <div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-3 peer-disabled:opacity-50">
+                          <MailIcon size={16} aria-hidden="true" />
+                        </div>
+                      </div>
+                      <FormFieldError field={f} />
+                    </div>
+                  );
+                }}
+              />
+              <form.Field
+                name="reason"
+                children={(f) => {
+                  return <RequestAccessReasonTextArea f={f} />;
+                }}
+              />
+            </div>
+            <form.Field
+              name="role"
+              children={(f) => {
+                return <RoleRadioGroup f={f} />;
+              }}
+            />
+            <div className="space-y-2">
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending && (
+                  <LoaderCircleIcon
+                    className="-ms-1 animate-spin"
+                    size={16}
+                    aria-hidden="true"
+                  />
+                )}
+                Request Access
+              </Button>
+              <Link to="/">
+                <Button type="button" className="w-full" variant="ghost">
+                  Back
+                </Button>
+              </Link>
+            </div>
+          </form>
+        </>
+      )}
     </div>
   );
 }
