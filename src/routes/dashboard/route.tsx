@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { useLogout } from "@/hooks/auth/use-auth";
+import { useLogout } from "@/hooks/use-auth";
 import apiClient from "@/lib/axios";
 import { useSessionStore } from "@/store/use-session-store";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
