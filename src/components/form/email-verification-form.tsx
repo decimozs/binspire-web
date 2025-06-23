@@ -11,7 +11,7 @@ import { Link } from "@tanstack/react-router";
 import { useEmail } from "@/hooks/use-email";
 import { verificationTypeValues } from "@/lib/constants";
 
-const emailVerificationSchema = z.object({
+export const emailVerificationSchema = z.object({
   email: z
     .string()
     .min(1, { message: "Email is required" })
@@ -25,7 +25,7 @@ export type EmailVerificationFormFields = z.infer<
 
 const defaultValues: EmailVerificationFormFields = {
   email: "",
-  type: "email-verification",
+  type: "forgot-password",
 };
 
 const formOpts = formOptions({
