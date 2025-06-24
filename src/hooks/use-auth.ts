@@ -1,5 +1,6 @@
 import type { LoginFormFields } from "@/components/form/login-form";
 import type { RequestAccessFormFields } from "@/components/form/request-access-form";
+import type { ResetPasswordFormFields } from "@/components/form/reset-password-form";
 import { successSonner } from "@/components/ui/sonner";
 import apiClient, { axiosError } from "@/lib/axios";
 import { useSessionStore } from "@/store/use-session-store";
@@ -43,6 +44,18 @@ export function useRequestAccess() {
   return useMutation({
     mutationFn: async (data: RequestAccessFormFields) => {
       return await apiClient.post("/requests-access", data);
+    },
+    onError: (error) => axiosError(error),
+    onSuccess: ({ data }) => {
+      successSonner(data.message);
+    },
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: async (data: ResetPasswordFormFields) => {
+      return await apiClient.post("/auth/reset-password", data);
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {

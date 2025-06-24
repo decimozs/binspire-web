@@ -11,9 +11,9 @@ import { useCharacterLimit } from "@/hooks/use-character-limit";
 import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FormFieldError } from "./form-field-error";
-import Logo from "../core/logo";
 import { Link } from "@tanstack/react-router";
 import { useRequestAccess } from "@/hooks/use-auth";
+import FormHeader from "./form-header";
 
 export const requestAccessFormSchema = z.object({
   orgId: z.string().min(1, { message: "Org id is required" }),
@@ -66,30 +66,24 @@ export default function RequestAccessForm() {
   return (
     <div className="w-full max-w-md p-8 space-y-5">
       {isSuccess ? (
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Logo status="success" />
-          <h1 className="text-lg font-medium">Request Submitted</h1>
-          <p className="text-muted-foreground text-sm">
-            Your access request has been successfully submitted. Please check
-            your email for updates.
-          </p>
-          <Link to="/">
-            <Button type="button" className="w-full mt-4">
-              Back to Home
-            </Button>
-          </Link>
-        </div>
+        <FormHeader
+          props={{
+            formTitle: "Request Submitted",
+            formDescription:
+              "Your access request has been successfully submitted. Please check your email for updates.",
+            isModal: true,
+            status: "success",
+          }}
+        />
       ) : (
         <>
-          <div className="flex flex-col items-center gap-2">
-            <Logo />
-            <div className="flex items-center flex-col gap-2">
-              <h1 className="text-lg font-medium">Request Access</h1>
-              <p className="text-sm wrap text-muted-foreground">
-                Enter your credentials to login to your account.
-              </p>
-            </div>
-          </div>
+          <FormHeader
+            props={{
+              formTitle: "Request Access",
+              formDescription:
+                "Please fill out the form below to request access. We'll review your submission and notify you via email.",
+            }}
+          />
           <form
             onSubmit={(e) => {
               e.preventDefault();

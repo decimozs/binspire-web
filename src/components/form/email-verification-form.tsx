@@ -6,10 +6,10 @@ import { Input } from "../ui/input";
 import { useId, useState } from "react";
 import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
-import Logo from "../core/logo";
 import { Link } from "@tanstack/react-router";
 import { useEmail } from "@/hooks/use-email";
 import { verificationTypeValues } from "@/lib/constants";
+import FormHeader from "./form-header";
 
 export const emailVerificationSchema = z.object({
   email: z
@@ -53,31 +53,24 @@ export default function EmailVerificationForm() {
   return (
     <div className="w-full max-w-md px-8 space-y-5">
       {isSuccess ? (
-        <div className="flex flex-col items-center gap-4 text-center">
-          <Logo status="success" />
-          <h1 className="text-lg">Verification Email Sent</h1>
-          <p className="text-muted-foreground text-sm">
-            We've sent a verification link to your email. Please check your
-            inbox and follow the instructions to verify your account.
-          </p>
-          <Link to="/">
-            <Button type="button" className="w-full mt-4">
-              Back to Home
-            </Button>
-          </Link>
-        </div>
+        <FormHeader
+          props={{
+            formTitle: "Verification Email Sent",
+            formDescription:
+              "We've sent a verification link to your email. Please check your inbox and follow the instructions to verify your account.",
+            isModal: true,
+            status: "success",
+          }}
+        />
       ) : (
         <>
-          <div className="flex flex-col items-center gap-2">
-            <Logo />
-            <div className="flex items-center flex-col gap-2">
-              <h1 className="text-lg font-medium">Verify Your Email</h1>
-              <p className="text-sm text-muted-foreground text-center">
-                Enter your email address and we’ll send you a verification link.
-              </p>
-            </div>
-          </div>
-
+          <FormHeader
+            props={{
+              formTitle: "Verify your Email",
+              formDescription:
+                "Enter your email address and we’ll send you a verification link.",
+            }}
+          />
           <form
             onSubmit={(e) => {
               e.preventDefault();

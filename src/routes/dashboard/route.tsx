@@ -9,7 +9,7 @@ export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
     try {
       const session = await apiClient.get("/auth/session");
-      useSessionStore.getState().setSession(session.data?.data);
+      useSessionStore.getState().setSession(session.data?.payload);
     } catch {
       throw redirect({ to: "/" });
     }
