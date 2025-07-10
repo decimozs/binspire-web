@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Brush,
-  Database,
-  Info,
-  Settings2,
-  SlidersHorizontal,
-} from "lucide-react";
+import { Box, Brush, Database, Info, Settings2 } from "lucide-react";
 import { SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
 import { CommandDialog } from "@/components/ui/command";
 

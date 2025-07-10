@@ -2,7 +2,6 @@ import { useId, useRef } from "react";
 import { CircleXIcon, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import type { Table } from "@tanstack/react-table";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 type SearchTableProps<T> = {
   pattern: string;
@@ -15,7 +14,6 @@ export default function SearchTable<T>({
 }: SearchTableProps<T>) {
   const id = useId();
   const inputRef = useRef<HTMLInputElement>(null);
-  const isMobile = useIsMobile();
 
   const column = table.getColumn(pattern);
   const value = (column?.getFilterValue() as string) ?? "";

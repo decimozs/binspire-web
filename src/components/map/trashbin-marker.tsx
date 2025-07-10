@@ -1,6 +1,5 @@
 import { DeckGL } from "@deck.gl/react";
 import { ScenegraphLayer } from "@deck.gl/mesh-layers";
-import type { PickingInfo } from "@deck.gl/core";
 import { INITIAL_VIEW_STATE } from "@/lib/constants";
 
 type BartStation = {
@@ -14,7 +13,7 @@ export default function TrashbinMarker() {
     data: "https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json",
 
     getPosition: (d: BartStation) => d.coordinates,
-    getOrientation: (d: BartStation) => [0, Math.random() * 180, 90],
+    getOrientation: [0, Math.random() * 180, 90],
     scenegraph:
       "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BoxAnimated/glTF-Binary/BoxAnimated.glb",
     sizeScale: 500,

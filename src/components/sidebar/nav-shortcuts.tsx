@@ -49,7 +49,7 @@ function AdminShortcuts({ shortcuts }: { shortcuts: Shortcut[] }) {
   );
 }
 
-function CollectorShortcuts({ shortcuts }: { shortcuts: Shortcut[] }) {
+export function CollectorShortcuts({ shortcuts }: { shortcuts: Shortcut[] }) {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Shortcuts</SidebarGroupLabel>

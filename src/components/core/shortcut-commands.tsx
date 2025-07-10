@@ -62,7 +62,7 @@ export function FindUserShortcut() {
                 <CommandItem
                   key={i.id}
                   value={`USER-${generateIdNumber(i.id)}`}
-                  onSelect={(e) => {
+                  onSelect={() => {
                     setViewUser(true);
                     setUserId(i.id);
                   }}
@@ -134,7 +134,7 @@ export function FindTrashbinShortcut() {
                 <CommandItem
                   key={i.id}
                   value={`TRASHBIN-${generateIdNumber(i.id)}`}
-                  onSelect={(e) => {
+                  onSelect={() => {
                     setViewTrashbin(true);
                     setTrashbinId(i.id);
                   }}
@@ -209,7 +209,7 @@ export function FindRequestShortcut() {
                 <CommandItem
                   key={i.id}
                   value={`REQUEST-${generateIdNumber(i.id)}`}
-                  onSelect={(e) => {
+                  onSelect={() => {
                     setViewRequestAccess(true);
                     setRequestAccessId(i.id);
                   }}

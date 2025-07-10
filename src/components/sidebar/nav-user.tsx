@@ -1,8 +1,6 @@
 import {
-  Bell,
   ChevronsUpDown,
   CircleUserRoundIcon,
-  History,
   LogOut,
   User,
 } from "lucide-react";

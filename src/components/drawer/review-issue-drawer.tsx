@@ -9,7 +9,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "../ui/button";
-import { Check, CircleAlert } from "lucide-react";
+import { CircleAlert } from "lucide-react";
 import { generateIdNumber } from "@/lib/utils";
 import type { Issue } from "@/schemas/issue-schema";
 import { Separator } from "../ui/separator";

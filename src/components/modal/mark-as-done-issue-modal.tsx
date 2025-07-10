@@ -12,12 +12,7 @@ import { Button } from "../ui/button";
 import z from "zod/v4";
 import { useForm } from "@tanstack/react-form";
 import { useId, useRef } from "react";
-import {
-  Check,
-  CheckCircle2,
-  LoaderCircleIcon,
-  TriangleAlert,
-} from "lucide-react";
+import { CheckCircle2, LoaderCircleIcon, TriangleAlert } from "lucide-react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { FormFieldError } from "../form/form-field-error";

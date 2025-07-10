@@ -17,7 +17,7 @@ import {
   subMonths,
   subYears,
 } from "date-fns";
-import { CalendarIcon, X } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import type { Column, Table } from "@tanstack/react-table";
 import { filteringSonner } from "../ui/sonner";
 import { toast } from "sonner";

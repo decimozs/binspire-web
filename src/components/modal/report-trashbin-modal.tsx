@@ -8,8 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FileText, LoaderCircleIcon, Send } from "lucide-react";
-import { SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { FileText, LoaderCircleIcon } from "lucide-react";
 import useIssue from "@/queries/use-issue";
 import { useForm } from "@tanstack/react-form";
 import { createIssueSchema, type CreateIssue } from "@/schemas/issue-schema";

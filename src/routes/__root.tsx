@@ -4,7 +4,6 @@ import { ThemeColorSync } from "@/components/theme/theme-color-sync";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 import { NuqsAdapter } from "nuqs/adapters/react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MqttProvider } from "@/components/provider/mqtt-provider";
 

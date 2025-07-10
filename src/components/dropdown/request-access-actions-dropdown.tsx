@@ -3,7 +3,6 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { DeleteModal } from "../modal/delete-modal";
-import ReviewRequestAccessModal from "../modal/review-request-access-modal";
 import type { RequestAccess } from "@/schemas/request-access-schema";
 import { ActionsDropdown } from "../core/actions-dropdown";
 import { UpdateModal } from "../modal/update-modal";

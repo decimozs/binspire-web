@@ -1,5 +1,4 @@
 import { ActionsDropdown } from "../core/actions-dropdown";
-import { useSessionStore } from "@/store/use-session-store";
 import { DeleteModal } from "../modal/delete-modal";
 import type { Trashbin } from "@/schemas/trashbin-schema";
 import useTrashbin from "@/queries/use-trashbin";
@@ -18,7 +17,6 @@ export default function TrashbinActionDropdown({
 }: TrashbinActionsDropdown) {
   const [, setTrashbinId] = useQueryState("trashbin_id");
   const [, setViewTrashbin] = useQueryState("view_trashbin", parseAsBoolean);
-  const { session } = useSessionStore();
   const { deleteTrashbin, updateTrashbin } = useTrashbin();
   const isDeleting = deleteTrashbin.isPending;
   const isUpdating = updateTrashbin.isPending;
