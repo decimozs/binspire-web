@@ -12,10 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteRouteImport } from './routes/dashboard/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardMapRouteImport } from './routes/dashboard/map'
+import { Route as DashboardIssuesRouteImport } from './routes/dashboard/issues'
+import { Route as DashboardHistoryRouteImport } from './routes/dashboard/history'
+import { Route as DashboardCollectorBoardRouteImport } from './routes/dashboard/collector-board'
+import { Route as DashboardBoardRouteImport } from './routes/dashboard/board'
+import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard/analytics'
+import { Route as DashboardActivityRouteImport } from './routes/dashboard/activity'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password'
 import { Route as AuthRequestAccessRouteImport } from './routes/auth/request-access'
 import { Route as AuthEmailVerificationRouteImport } from './routes/auth/email-verification'
 import { Route as AuthCreateAccountRouteImport } from './routes/auth/create-account'
+import { Route as DashboardUserRequestsAccessRouteImport } from './routes/dashboard/user/requests-access'
+import { Route as DashboardUserManagementRouteImport } from './routes/dashboard/user/management'
+import { Route as DashboardTrashbinManagementRouteImport } from './routes/dashboard/trashbin/management'
+import { Route as DashboardTrashbinCollectionsRouteImport } from './routes/dashboard/trashbin/collections'
 
 const DashboardRouteRoute = DashboardRouteRouteImport.update({
   id: '/dashboard',
@@ -30,6 +40,36 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardMapRoute = DashboardMapRouteImport.update({
   id: '/map',
   path: '/map',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardIssuesRoute = DashboardIssuesRouteImport.update({
+  id: '/issues',
+  path: '/issues',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardHistoryRoute = DashboardHistoryRouteImport.update({
+  id: '/history',
+  path: '/history',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardCollectorBoardRoute = DashboardCollectorBoardRouteImport.update({
+  id: '/collector-board',
+  path: '/collector-board',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardBoardRoute = DashboardBoardRouteImport.update({
+  id: '/board',
+  path: '/board',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardAnalyticsRoute = DashboardAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardActivityRoute = DashboardActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
@@ -52,6 +92,29 @@ const AuthCreateAccountRoute = AuthCreateAccountRouteImport.update({
   path: '/auth/create-account',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardUserRequestsAccessRoute =
+  DashboardUserRequestsAccessRouteImport.update({
+    id: '/user/requests-access',
+    path: '/user/requests-access',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardUserManagementRoute = DashboardUserManagementRouteImport.update({
+  id: '/user/management',
+  path: '/user/management',
+  getParentRoute: () => DashboardRouteRoute,
+} as any)
+const DashboardTrashbinManagementRoute =
+  DashboardTrashbinManagementRouteImport.update({
+    id: '/trashbin/management',
+    path: '/trashbin/management',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
+const DashboardTrashbinCollectionsRoute =
+  DashboardTrashbinCollectionsRouteImport.update({
+    id: '/trashbin/collections',
+    path: '/trashbin/collections',
+    getParentRoute: () => DashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -60,7 +123,17 @@ export interface FileRoutesByFullPath {
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/dashboard/activity': typeof DashboardActivityRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/board': typeof DashboardBoardRoute
+  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
+  '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
+  '/dashboard/trashbin/collections': typeof DashboardTrashbinCollectionsRoute
+  '/dashboard/trashbin/management': typeof DashboardTrashbinManagementRoute
+  '/dashboard/user/management': typeof DashboardUserManagementRoute
+  '/dashboard/user/requests-access': typeof DashboardUserRequestsAccessRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +142,17 @@ export interface FileRoutesByTo {
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/dashboard/activity': typeof DashboardActivityRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/board': typeof DashboardBoardRoute
+  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
+  '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
+  '/dashboard/trashbin/collections': typeof DashboardTrashbinCollectionsRoute
+  '/dashboard/trashbin/management': typeof DashboardTrashbinManagementRoute
+  '/dashboard/user/management': typeof DashboardUserManagementRoute
+  '/dashboard/user/requests-access': typeof DashboardUserRequestsAccessRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +162,17 @@ export interface FileRoutesById {
   '/auth/email-verification': typeof AuthEmailVerificationRoute
   '/auth/request-access': typeof AuthRequestAccessRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/dashboard/activity': typeof DashboardActivityRoute
+  '/dashboard/analytics': typeof DashboardAnalyticsRoute
+  '/dashboard/board': typeof DashboardBoardRoute
+  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
+  '/dashboard/history': typeof DashboardHistoryRoute
+  '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
+  '/dashboard/trashbin/collections': typeof DashboardTrashbinCollectionsRoute
+  '/dashboard/trashbin/management': typeof DashboardTrashbinManagementRoute
+  '/dashboard/user/management': typeof DashboardUserManagementRoute
+  '/dashboard/user/requests-access': typeof DashboardUserRequestsAccessRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +183,17 @@ export interface FileRouteTypes {
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/board'
+    | '/dashboard/collector-board'
+    | '/dashboard/history'
+    | '/dashboard/issues'
     | '/dashboard/map'
+    | '/dashboard/trashbin/collections'
+    | '/dashboard/trashbin/management'
+    | '/dashboard/user/management'
+    | '/dashboard/user/requests-access'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +202,17 @@ export interface FileRouteTypes {
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/board'
+    | '/dashboard/collector-board'
+    | '/dashboard/history'
+    | '/dashboard/issues'
     | '/dashboard/map'
+    | '/dashboard/trashbin/collections'
+    | '/dashboard/trashbin/management'
+    | '/dashboard/user/management'
+    | '/dashboard/user/requests-access'
   id:
     | '__root__'
     | '/'
@@ -108,7 +221,17 @@ export interface FileRouteTypes {
     | '/auth/email-verification'
     | '/auth/request-access'
     | '/auth/reset-password'
+    | '/dashboard/activity'
+    | '/dashboard/analytics'
+    | '/dashboard/board'
+    | '/dashboard/collector-board'
+    | '/dashboard/history'
+    | '/dashboard/issues'
     | '/dashboard/map'
+    | '/dashboard/trashbin/collections'
+    | '/dashboard/trashbin/management'
+    | '/dashboard/user/management'
+    | '/dashboard/user/requests-access'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,6 +266,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardMapRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
+    '/dashboard/issues': {
+      id: '/dashboard/issues'
+      path: '/issues'
+      fullPath: '/dashboard/issues'
+      preLoaderRoute: typeof DashboardIssuesRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/history': {
+      id: '/dashboard/history'
+      path: '/history'
+      fullPath: '/dashboard/history'
+      preLoaderRoute: typeof DashboardHistoryRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/collector-board': {
+      id: '/dashboard/collector-board'
+      path: '/collector-board'
+      fullPath: '/dashboard/collector-board'
+      preLoaderRoute: typeof DashboardCollectorBoardRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/board': {
+      id: '/dashboard/board'
+      path: '/board'
+      fullPath: '/dashboard/board'
+      preLoaderRoute: typeof DashboardBoardRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/analytics': {
+      id: '/dashboard/analytics'
+      path: '/analytics'
+      fullPath: '/dashboard/analytics'
+      preLoaderRoute: typeof DashboardAnalyticsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/activity': {
+      id: '/dashboard/activity'
+      path: '/activity'
+      fullPath: '/dashboard/activity'
+      preLoaderRoute: typeof DashboardActivityRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
     '/auth/reset-password': {
       id: '/auth/reset-password'
       path: '/auth/reset-password'
@@ -171,15 +336,63 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthCreateAccountRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard/user/requests-access': {
+      id: '/dashboard/user/requests-access'
+      path: '/user/requests-access'
+      fullPath: '/dashboard/user/requests-access'
+      preLoaderRoute: typeof DashboardUserRequestsAccessRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/user/management': {
+      id: '/dashboard/user/management'
+      path: '/user/management'
+      fullPath: '/dashboard/user/management'
+      preLoaderRoute: typeof DashboardUserManagementRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/trashbin/management': {
+      id: '/dashboard/trashbin/management'
+      path: '/trashbin/management'
+      fullPath: '/dashboard/trashbin/management'
+      preLoaderRoute: typeof DashboardTrashbinManagementRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
+    '/dashboard/trashbin/collections': {
+      id: '/dashboard/trashbin/collections'
+      path: '/trashbin/collections'
+      fullPath: '/dashboard/trashbin/collections'
+      preLoaderRoute: typeof DashboardTrashbinCollectionsRouteImport
+      parentRoute: typeof DashboardRouteRoute
+    }
   }
 }
 
 interface DashboardRouteRouteChildren {
+  DashboardActivityRoute: typeof DashboardActivityRoute
+  DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
+  DashboardBoardRoute: typeof DashboardBoardRoute
+  DashboardCollectorBoardRoute: typeof DashboardCollectorBoardRoute
+  DashboardHistoryRoute: typeof DashboardHistoryRoute
+  DashboardIssuesRoute: typeof DashboardIssuesRoute
   DashboardMapRoute: typeof DashboardMapRoute
+  DashboardTrashbinCollectionsRoute: typeof DashboardTrashbinCollectionsRoute
+  DashboardTrashbinManagementRoute: typeof DashboardTrashbinManagementRoute
+  DashboardUserManagementRoute: typeof DashboardUserManagementRoute
+  DashboardUserRequestsAccessRoute: typeof DashboardUserRequestsAccessRoute
 }
 
 const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
+  DashboardActivityRoute: DashboardActivityRoute,
+  DashboardAnalyticsRoute: DashboardAnalyticsRoute,
+  DashboardBoardRoute: DashboardBoardRoute,
+  DashboardCollectorBoardRoute: DashboardCollectorBoardRoute,
+  DashboardHistoryRoute: DashboardHistoryRoute,
+  DashboardIssuesRoute: DashboardIssuesRoute,
   DashboardMapRoute: DashboardMapRoute,
+  DashboardTrashbinCollectionsRoute: DashboardTrashbinCollectionsRoute,
+  DashboardTrashbinManagementRoute: DashboardTrashbinManagementRoute,
+  DashboardUserManagementRoute: DashboardUserManagementRoute,
+  DashboardUserRequestsAccessRoute: DashboardUserRequestsAccessRoute,
 }
 
 const DashboardRouteRouteWithChildren = DashboardRouteRoute._addFileChildren(

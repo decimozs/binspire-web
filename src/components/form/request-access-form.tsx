@@ -1,10 +1,9 @@
 import { formOptions, useForm } from "@tanstack/react-form";
-import z from "zod";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useEffect, useId, useState } from "react";
-import { ORG_ID, roleValues } from "@/lib/constants";
+import { ORG_ID } from "@/lib/constants";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "../ui/textarea";
 import { useCharacterLimit } from "@/hooks/use-character-limit";
@@ -12,48 +11,36 @@ import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { FormFieldError } from "./form-field-error";
 import { Link } from "@tanstack/react-router";
-import { useRequestAccess } from "@/hooks/use-auth";
 import FormHeader from "./form-header";
+import {
+  createRequestAcessSchema,
+  type CreateRequestAccess,
+} from "@/schemas/request-access-schema";
+import useRequestAccess from "@/queries/use-request-access";
 
-export const requestAccessFormSchema = z.object({
-  orgId: z.string().min(1, { message: "Org id is required" }),
-  name: z.string().min(1, { message: "Name is required" }),
-  email: z
-    .string()
-    .min(1, { message: "Email is required" })
-    .email({ message: "Please enter a valid email address" }),
-  reason: z
-    .string()
-    .max(180, { message: "Reason must be 180 characters or fewer" })
-    .optional(),
-  role: z.enum(roleValues, {
-    errorMap: () => ({ message: "Please select a valid role" }),
-  }),
-});
-
-export type RequestAccessFormFields = z.infer<typeof requestAccessFormSchema>;
-
-const defaultValues: RequestAccessFormFields = {
+export const defaultValues: CreateRequestAccess = {
   orgId: ORG_ID,
   name: "",
   email: "",
   reason: "",
   role: "admin",
+  status: "pending",
+  permission: "viewer",
 };
 
 const formOpts = formOptions({
   defaultValues: defaultValues,
   validators: {
-    onSubmit: requestAccessFormSchema,
+    onSubmit: createRequestAcessSchema,
   },
 });
 
 export default function RequestAccessForm() {
   const id = useId();
-  const requestAccess = useRequestAccess();
+  const { createRequestAccess } = useRequestAccess();
+  const requestAccess = createRequestAccess;
   const isPending = requestAccess.isPending;
   const [isSuccess, setIsSuccess] = useState(false);
-
   const form = useForm({
     ...formOpts,
     onSubmit: async ({ value, formApi }) => {

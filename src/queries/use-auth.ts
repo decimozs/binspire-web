@@ -1,17 +1,35 @@
-import type { LoginFormFields } from "@/components/form/login-form";
-import type { RequestAccessFormFields } from "@/components/form/request-access-form";
-import type { ResetPasswordFormFields } from "@/components/form/reset-password-form";
+import type { Login } from "@/components/form/login-form";
+import type { ResetPassword } from "@/components/form/reset-password-form";
 import { successSonner } from "@/components/ui/sonner";
 import apiClient, { axiosError } from "@/lib/axios";
+import type { CreateAccountSchema as CreateAccount } from "@/schemas/account-schema";
 import { useSessionStore } from "@/store/use-session-store";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
 export function useLogin() {
   const navigate = useNavigate();
+
   return useMutation({
-    mutationFn: async (data: LoginFormFields) => {
+    mutationFn: async (data: Login) => {
       return await apiClient.post("/auth/login", data);
+    },
+    onError: (error) => axiosError(error),
+    onSuccess: ({ data }) => {
+      successSonner(data.message);
+      return navigate({
+        to: "/dashboard/map",
+      });
+    },
+  });
+}
+
+export function useCreateAccount() {
+  const navigate = useNavigate();
+
+  return useMutation({
+    mutationFn: async (data: CreateAccount) => {
+      return await apiClient.post("/auth/sign-up", data);
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
@@ -40,10 +58,10 @@ export function useLogout() {
   });
 }
 
-export function useRequestAccess() {
+export function useResetPassword() {
   return useMutation({
-    mutationFn: async (data: RequestAccessFormFields) => {
-      return await apiClient.post("/requests-access", data);
+    mutationFn: async (data: ResetPassword) => {
+      return await apiClient.post("/auth/reset-password", data);
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
@@ -52,14 +70,16 @@ export function useRequestAccess() {
   });
 }
 
-export function useResetPassword() {
-  return useMutation({
-    mutationFn: async (data: ResetPasswordFormFields) => {
-      return await apiClient.post("/auth/reset-password", data);
-    },
-    onError: (error) => axiosError(error),
-    onSuccess: ({ data }) => {
-      successSonner(data.message);
-    },
-  });
+export function useAuth() {
+  const login = useLogin();
+  const logout = useLogout();
+  const resetPassword = useResetPassword();
+  const createAccount = useCreateAccount();
+
+  return {
+    login,
+    logout,
+    resetPassword,
+    createAccount,
+  };
 }

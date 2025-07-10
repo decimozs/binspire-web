@@ -7,9 +7,9 @@ import { useId, useState } from "react";
 import { LoaderCircleIcon, MailIcon } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
 import { Link } from "@tanstack/react-router";
-import { useEmail } from "@/hooks/use-email";
 import { verificationTypeValues } from "@/lib/constants";
 import FormHeader from "./form-header";
+import { useEmail } from "@/queries/use-email";
 
 export const emailVerificationSchema = z.object({
   email: z
@@ -19,11 +19,9 @@ export const emailVerificationSchema = z.object({
   type: z.enum(verificationTypeValues),
 });
 
-export type EmailVerificationFormFields = z.infer<
-  typeof emailVerificationSchema
->;
+export type EmailVerification = z.infer<typeof emailVerificationSchema>;
 
-const defaultValues: EmailVerificationFormFields = {
+const defaultValues: EmailVerification = {
   email: "",
   type: "forgot-password",
 };

@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
 import { Link, useRouteContext } from "@tanstack/react-router";
-import { useResetPassword } from "@/hooks/use-auth";
 import FormHeader from "./form-header";
+import { useAuth } from "@/queries/use-auth";
 
 const resetPasswordSchema = z
   .object({
@@ -34,16 +34,16 @@ const resetPasswordSchema = z
     path: ["confirmPassword"],
   });
 
-export type ResetPasswordFormFields = z.infer<typeof resetPasswordSchema>;
+export type ResetPassword = z.infer<typeof resetPasswordSchema>;
 
 export default function ResetPasswordForm() {
   const id = useId();
   const { email } = useRouteContext({ from: "/auth/reset-password" });
-  const resetPassword = useResetPassword();
+  const { resetPassword } = useAuth();
   const isPending = resetPassword.isPending;
   const [isSuccess, setIsSuccess] = useState(false);
 
-  const defaultValues: ResetPasswordFormFields = {
+  const defaultValues: ResetPassword = {
     email,
     password: "",
     confirmPassword: "",

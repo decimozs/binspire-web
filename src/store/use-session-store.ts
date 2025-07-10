@@ -1,5 +1,5 @@
+import type { Session } from "@/routes/dashboard/route";
 import { create } from "zustand";
-import type { Session } from "@/lib/types";
 
 interface SessionStore {
   session: Session | null;

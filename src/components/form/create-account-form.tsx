@@ -6,7 +6,6 @@ import { Input } from "../ui/input";
 import { useId, useMemo, useState } from "react";
 import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from "lucide-react";
 import { FormFieldError } from "./form-field-error";
-import { successSonner } from "../ui/sonner";
 import Logo from "../core/logo";
 import {
   Card,
@@ -14,7 +13,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouteContext } from "@tanstack/react-router";
+import { useAuth } from "@/queries/use-auth";
 
 const createAccountSchema = z
   .object({
@@ -31,9 +31,9 @@ const createAccountSchema = z
     path: ["confirmPassword"],
   });
 
-type CreateAccountFormFields = z.infer<typeof createAccountSchema>;
+type CreateAccount = z.infer<typeof createAccountSchema>;
 
-const defaultValues: CreateAccountFormFields = {
+const defaultValues: CreateAccount = {
   password: "",
   confirmPassword: "",
 };
@@ -45,21 +45,28 @@ const formOpts = formOptions({
   },
 });
 
-const mockData = {
-  id: 1,
-  name: "Marlon Martin",
-  email: "marlonadiguemartint548@gmail.com",
-  role: "Admin",
-};
-
 export default function CreateAccountForm() {
   const id = useId();
+  const { requestAccess: data } = useRouteContext({
+    from: "/auth/create-account",
+  });
+  const { createAccount } = useAuth();
 
   const form = useForm({
     ...formOpts,
     onSubmit: async ({ value }) => {
-      console.log("Account created:", value);
-      successSonner("Account created");
+      await createAccount.mutateAsync({
+        userData: {
+          name: data.name,
+          orgId: data.orgId,
+          email: data.email,
+          permission: data.permission,
+          role: data.role,
+        },
+        accountData: {
+          password: value.password,
+        },
+      });
     },
   });
 
@@ -114,7 +121,6 @@ export default function CreateAccountForm() {
           </p>
         </div>
       </div>
-
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -129,15 +135,17 @@ export default function CreateAccountForm() {
               <CardTitle>Account Details</CardTitle>
               <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Name</p>
-                <CardDescription>{mockData.name}</CardDescription>
+                <CardDescription>{data.name}</CardDescription>
               </div>
               <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Email</p>
-                <CardDescription>{mockData.email}</CardDescription>
+                <CardDescription>{data.email}</CardDescription>
               </div>
               <div className="grid grid-cols-[50px_1fr]">
                 <p className="text-sm">Role</p>
-                <CardDescription>{mockData.role}</CardDescription>
+                <CardDescription className="capitalize">
+                  {data.role}
+                </CardDescription>
               </div>
             </CardHeader>
           </Card>

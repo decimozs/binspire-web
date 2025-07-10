@@ -118,3 +118,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.maplibregl-ctrl {
+  display: none;
+}

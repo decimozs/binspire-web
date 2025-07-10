@@ -1,8 +1,5 @@
-"use client";
-
-import { useId, useState } from "react";
-import { CircleAlertIcon } from "lucide-react";
-
+import { useId, useRef } from "react";
+import { LoaderCircleIcon, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,55 +13,113 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { z } from "zod/v4";
+import { useForm } from "@tanstack/react-form";
+import { FormFieldError } from "../form/form-field-error";
+import { actionIconMap, getActionContent } from "@/lib/constants";
+import type { ActionType, ResourceType } from "@/lib/types";
 
-const PROJECT_NAME = "Origin UI";
+const confirmationFormSchema = z
+  .object({
+    identifier: z.string(),
+    confirmIdentifier: z.string().min(1, "You must confirm before proceeding"),
+  })
+  .refine((data) => data.identifier === data.confirmIdentifier, {
+    path: ["confirmIdentifier"],
+    message: "Input does not match the required identifier.",
+  });
 
-interface ConfirmationModalProps {
-  modalTitle: string;
-  modalDescription: string;
-  buttonLabel: string;
+interface ConfirmationModalProps<T extends { id: string; name: string }> {
+  data: T;
+  trigger: React.ReactNode;
+  action: ActionType;
+  onSubmit: (id: string) => Promise<void>;
+  isPending: boolean;
+  resourceType?: ResourceType;
 }
 
-export default function ConfirmationModal({
-  opts,
-}: {
-  opts: ConfirmationModalProps;
-}) {
+export function ConfirmationModal<T extends { id: string; name: string }>({
+  data,
+  trigger,
+  action,
+  onSubmit,
+  isPending,
+  resourceType,
+}: ConfirmationModalProps<T>) {
   const id = useId();
-  const [inputValue, setInputValue] = useState("");
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const Icon = actionIconMap[action];
+  const { title, description, warning } = getActionContent(
+    action,
+    data,
+    resourceType,
+  );
+
+  const form = useForm({
+    defaultValues: {
+      identifier: data.name,
+      confirmIdentifier: "",
+    },
+    validators: {
+      onSubmit: confirmationFormSchema,
+    },
+    onSubmit: async ({ formApi }) => {
+      await onSubmit(data.id);
+      formApi.reset();
+      closeRef.current?.click();
+    },
+  });
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline">{opts.buttonLabel}</Button>
-      </DialogTrigger>
-      <DialogContent>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="min-w-3xs">
         <div className="flex flex-col items-center gap-2">
           <div
-            className="flex size-9 shrink-0 items-center justify-center rounded-full border"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border"
             aria-hidden="true"
           >
-            <CircleAlertIcon className="opacity-80" size={16} />
+            <Icon className="opacity-80" size={23} />
           </div>
           <DialogHeader>
-            <DialogTitle className="sm:text-center">
-              Final confirmation
-            </DialogTitle>
+            <DialogTitle className="sm:text-center">{title}</DialogTitle>
             <DialogDescription className="sm:text-center">
-              This action cannot be undone. To confirm, please enter the project
-              name <span className="text-foreground">Origin UI</span>.
+              {description}
             </DialogDescription>
           </DialogHeader>
         </div>
-        <form className="space-y-5">
+        <div className="text-sm border-1 border-yellow-600 p-4 rounded-md bg-yellow-600/10 grid grid-cols-[20px_1fr] gap-4">
+          <TriangleAlert className="text-yellow-500 mt-1" size={20} />
+          <p> {warning}</p>
+        </div>
+        <form
+          className="space-y-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            form.handleSubmit();
+          }}
+        >
           <div className="*:not-first:mt-2">
-            <Label htmlFor={id}>Project name</Label>
-            <Input
-              id={id}
-              type="text"
-              placeholder="Type Origin UI to confirm"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
+            <Label
+              htmlFor={id}
+            >{`To confirm, type "${data.name}" in the box below`}</Label>
+            <form.Field
+              name="confirmIdentifier"
+              children={(f) => {
+                return (
+                  <>
+                    <Input
+                      id={id}
+                      type="text"
+                      value={f.state.value}
+                      onChange={(e) => f.handleChange(e.target.value)}
+                      aria-invalid={f.state.meta.errors.length > 0}
+                    />
+                    <FormFieldError field={f} />
+                  </>
+                );
+              }}
             />
           </div>
           <DialogFooter>
@@ -74,11 +129,19 @@ export default function ConfirmationModal({
               </Button>
             </DialogClose>
             <Button
-              type="button"
-              className="flex-1"
-              disabled={inputValue !== PROJECT_NAME}
+              type="submit"
+              className="flex-1 capitalize"
+              variant={action === "delete" ? "outlineDestructive" : "default"}
+              disabled={isPending}
             >
-              Delete
+              {isPending && (
+                <LoaderCircleIcon
+                  className="-ms-1 animate-spin"
+                  size={16}
+                  aria-hidden="true"
+                />
+              )}
+              {action}
             </Button>
           </DialogFooter>
         </form>

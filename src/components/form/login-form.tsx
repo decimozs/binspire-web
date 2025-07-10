@@ -10,7 +10,7 @@ import { FormFieldError } from "./form-field-error";
 import Logo from "../core/logo";
 import LegalPoliciesFooter from "../core/footer/legal-policies-footer";
 import { Link } from "@tanstack/react-router";
-import { useLogin } from "@/hooks/use-auth";
+import { useAuth } from "@/queries/use-auth";
 
 const loginFormSchema = z.object({
   email: z
@@ -20,9 +20,9 @@ const loginFormSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
-export type LoginFormFields = z.infer<typeof loginFormSchema>;
+export type Login = z.infer<typeof loginFormSchema>;
 
-const defaultValues: LoginFormFields = {
+const defaultValues: Login = {
   email: "",
   password: "",
 };
@@ -36,7 +36,7 @@ const formOpts = formOptions({
 
 export default function LoginForm() {
   const id = useId();
-  const login = useLogin();
+  const { login } = useAuth();
   const isPending = login.isPending;
 
   const form = useForm({
