@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Ellipsis } from "lucide-react";
-import type { ReactNode } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 
 export function ActionsDropdown({ children }: { children: ReactNode }) {
   return (
