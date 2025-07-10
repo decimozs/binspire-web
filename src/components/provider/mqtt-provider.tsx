@@ -19,8 +19,10 @@ export const MqttProvider = ({ children }: { children: React.ReactNode }) => {
       {
         username: "binspire",
         password: "@D!QsR.TGxb8PDy",
+        rejectUnauthorized: false,
       },
     );
+
     setClient(mqttClient);
 
     mqttClient.on("connect", () => {
