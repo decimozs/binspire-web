@@ -30,7 +30,7 @@ const confirmationFormSchema = z
     message: "Input does not match the required identifier.",
   });
 
-interface BatchConfirmationModalProps<T extends { id: string; name: string }> {
+interface BatchConfirmationModalProps<T extends { id: string; name?: string }> {
   data: T[];
   action: ActionType;
   onSubmit: (ids: T[]) => Promise<void> | undefined;
@@ -38,7 +38,9 @@ interface BatchConfirmationModalProps<T extends { id: string; name: string }> {
   resourceType?: ResourceType;
 }
 
-export function BatchConfirmationModal<T extends { id: string; name: string }>({
+export function BatchConfirmationModal<
+  T extends { id: string; name?: string },
+>({
   data,
   action,
   onSubmit,

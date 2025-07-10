@@ -21,7 +21,15 @@ export const Route = createFileRoute("/dashboard/user/management")({
 });
 
 function UserManagementRouteComponent() {
-  const { data } = useSuspenseQuery(userQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(userQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading users...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

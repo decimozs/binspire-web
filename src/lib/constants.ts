@@ -329,7 +329,7 @@ export const collectorSidebarData = {
 
 export const getActionContent = (
   actionType: ActionType,
-  data: { id: string; name: string } | { id: string; name: string }[],
+  data: { id: string; name?: string }[],
   resourceType: ResourceType = "request",
 ) => {
   const isBatch = Array.isArray(data);

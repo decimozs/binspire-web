@@ -21,7 +21,15 @@ export const Route = createFileRoute("/dashboard/history")({
 });
 
 function HistoryRouteComponent() {
-  const { data } = useSuspenseQuery(historyQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(historyQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading histories...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

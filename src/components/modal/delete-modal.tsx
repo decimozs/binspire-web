@@ -59,14 +59,14 @@ export function DeleteModal<T extends { id: string; name: string }>({
   );
 }
 
-interface BatchDeleteModalProps<T extends { id: string; name: string }> {
+interface BatchDeleteModalProps<T extends { id: string; name?: string }> {
   apiRoute: string;
   data: T[];
   table: Table<T>;
   resourceType?: ResourceType;
 }
 
-export function BatchDeleteModal<T extends { id: string; name: string }>({
+export function BatchDeleteModal<T extends { id: string; name?: string }>({
   apiRoute,
   data,
   table,

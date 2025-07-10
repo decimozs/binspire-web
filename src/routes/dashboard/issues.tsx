@@ -21,7 +21,15 @@ export const Route = createFileRoute("/dashboard/issues")({
 });
 
 function IssuesRouteComponent() {
-  const { data } = useSuspenseQuery(issuesQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(issuesQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading issues...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

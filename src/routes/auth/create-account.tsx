@@ -22,10 +22,17 @@ export const Route = createFileRoute("/auth/create-account")({
 
       const token = parsed.data.token;
 
-      const { email } = await verificationApi.getVerificationByToken(token);
+      const verificationResponse =
+        await verificationApi.getVerificationByToken(token);
+
+      const email = verificationResponse?.email;
+
+      if (!email) throw new Error("Email not found in verification");
 
       const requestAccess =
         await requestAccessApi.getRequestAccessByEmail(email);
+
+      if (!requestAccess) throw new Error("Request access not found");
 
       return { requestAccess };
     } catch {

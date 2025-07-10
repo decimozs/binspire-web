@@ -29,7 +29,7 @@ const confirmationFormSchema = z
     message: "Input does not match the required identifier.",
   });
 
-interface ConfirmationModalProps<T extends { id: string; name: string }> {
+interface ConfirmationModalProps<T extends { id: string; name?: string }> {
   data: T;
   trigger: React.ReactNode;
   action: ActionType;
@@ -38,7 +38,7 @@ interface ConfirmationModalProps<T extends { id: string; name: string }> {
   resourceType?: ResourceType;
 }
 
-export function ConfirmationModal<T extends { id: string; name: string }>({
+export function ConfirmationModal<T extends { id: string; name?: string }>({
   data,
   trigger,
   action,
@@ -51,7 +51,7 @@ export function ConfirmationModal<T extends { id: string; name: string }>({
   const Icon = actionIconMap[action];
   const { title, description, warning } = getActionContent(
     action,
-    data,
+    [data],
     resourceType,
   );
 

@@ -21,7 +21,15 @@ export const Route = createFileRoute("/dashboard/activity")({
 });
 
 function ActivityRouteComponent() {
-  const { data } = useSuspenseQuery(activityQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(activityQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading activities...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">

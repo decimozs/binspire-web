@@ -71,18 +71,20 @@ export function UpdateModal<T extends { id: string; name: string }>({
   );
 }
 
-interface BatchUpdateModalProps<T extends { id: string; name: string }> {
+interface BatchUpdateModalProps<T extends { id: string; name?: string }> {
   apiRoute: string;
   data: T[];
   table: Table<T>;
   action: ActionType;
+  resourceType?: ResourceType;
 }
 
-export function BatchUpdateModal<T extends { id: string; name: string }>({
+export function BatchUpdateModal<T extends { id: string; name?: string }>({
   apiRoute,
   data,
   table,
   action,
+  resourceType,
 }: BatchUpdateModalProps<T>) {
   const { batchUpdate } = useBatching<T>();
   const isPending = batchUpdate.isPending;
@@ -103,6 +105,7 @@ export function BatchUpdateModal<T extends { id: string; name: string }>({
       action={action}
       isPending={isPending}
       onSubmit={handleBatchUpdate}
+      resourceType={resourceType}
     />
   );
 }

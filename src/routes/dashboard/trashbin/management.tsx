@@ -21,10 +21,20 @@ export const Route = createFileRoute("/dashboard/trashbin/management")({
 });
 
 function TrashbinManagagementRouteComponent() {
+  const { data, isLoading } = useSuspenseQuery(trashbinsQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading trashbins...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <DataTable
-        data={useSuspenseQuery(trashbinsQueryOpts).data}
+        data={data}
         columns={trashbinColumns}
         searchPattern={"id"}
         apiRoute="trashbins"

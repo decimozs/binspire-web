@@ -12,7 +12,7 @@ export const issueSchema = z
     category: z.string().min(1, "Category is required"),
     referenceId: z.string().nullable().optional(),
     priority: z.enum(["low", "medium", "high"]),
-    isArchive: z.boolean().default(false),
+    isArchive: z.boolean(),
     ...baseSchema.shape,
   })
   .strict();

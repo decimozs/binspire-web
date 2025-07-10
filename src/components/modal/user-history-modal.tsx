@@ -18,8 +18,16 @@ export default function UserHistoryModal() {
   const { session } = useSessionStore();
   const { getHistoryByUserId } = useHistory();
   const userId = session?.userId || "";
-  const { data } = getHistoryByUserId(userId);
+  const { data, isLoading } = getHistoryByUserId(userId);
   const isMobile = useIsMobile();
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading user history...</p>
+      </div>
+    );
+  }
 
   if (isMobile) {
     return (

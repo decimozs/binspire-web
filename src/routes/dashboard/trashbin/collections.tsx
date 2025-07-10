@@ -21,7 +21,16 @@ export const Route = createFileRoute("/dashboard/trashbin/collections")({
 });
 
 function CollectionsRouteComponent() {
-  const { data } = useSuspenseQuery(collectionsQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(collectionsQueryOpts);
+
+  if (!data || isLoading) {
+    return (
+      <div>
+        <p>Loading collections...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="w-full">
       <DataTable
