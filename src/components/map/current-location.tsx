@@ -29,12 +29,11 @@ export default function UserLocationTracking() {
         const { latitude, longitude } = position.coords;
         setUserLocation({ lat: latitude, lng: longitude });
 
-        map?.flyTo({
+        map?.jumpTo({
           center: [longitude, latitude],
           zoom: INITIAL_VIEW_STATE.zoom,
           bearing: INITIAL_VIEW_STATE.bearing,
           pitch: INITIAL_VIEW_STATE.pitch,
-          essential: true,
         });
       },
       (error) => {

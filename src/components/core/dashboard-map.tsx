@@ -56,9 +56,6 @@ export default function DashboardMap() {
         initialViewState={INITIAL_VIEW_STATE}
         style={{ width: "100%", height: "100%", borderRadius: "1rem" }}
         mapStyle={`https://api.maptiler.com/maps/${layer}/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`}
-        onClick={(e) => {
-          console.log("Map clicked:", e.lngLat);
-        }}
       >
         <div className="fixed bottom-8 right-8 flex flex-col gap-2">
           <UserLocationTracking />
