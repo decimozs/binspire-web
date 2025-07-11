@@ -45,6 +45,7 @@ import type {
   RoleIcon,
   Status,
   StatusIcon,
+  TaskStatus,
   WasteStatus,
 } from "./types";
 import type { Map3DLayer } from "./layers";
@@ -130,6 +131,18 @@ export const issueIconMap: Record<Issue, LucideIcon> = {
   "in-progress": Loader2,
   resolved: CheckCircle2,
   closed: XCircle,
+};
+
+export const taskStatusIconMap: Record<TaskStatus, LucideIcon> = {
+  pending: Clock,
+  "in-progress": Loader2,
+  done: CheckCircle2,
+};
+
+export const taskStatusColorMap: Record<TaskStatus, string> = {
+  pending: "bg-yellow-400/20 text-yellow-500",
+  "in-progress": "bg-blue-400/20 text-blue-500",
+  done: "bg-green-400/20 text-green-500",
 };
 
 export const issueStatusColorMap: Record<Issue, string> = {

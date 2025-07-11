@@ -28,6 +28,8 @@ import type { Issue as IssueStatus } from "@/lib/types";
 import PermissionGuard from "../core/permission-guard";
 import CommittedBy from "../core/committed-by";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import { useIsMobile } from "@/hooks/use-mobile";
+import ReviewIssueDrawer from "../drawer/review-issue-drawer";
 
 const issueStatuses: IssueStatus[] = [
   "open",
@@ -80,7 +82,7 @@ export default function ReviewIssueModal() {
   const [viewIssue, setViewIssue] = useQueryState("view_issue", parseAsBoolean);
   const { data, isLoading } = getIssueById(issueId || "");
   const [open, setOpen] = useState(!!viewIssue);
-
+  const isMobile = useIsMobile();
   const isDeleting = deleteIssue.isPending;
   const isUpdating = updateIssue.isPending;
 
@@ -154,6 +156,16 @@ export default function ReviewIssueModal() {
     name: `ISSUE-${tIssueId}`,
     ...items,
   };
+
+  if (isMobile) {
+    return (
+      <ReviewIssueDrawer
+        data={tData}
+        open={open}
+        onOpenChange={handleOpenChange}
+      />
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>

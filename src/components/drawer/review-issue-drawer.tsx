@@ -22,26 +22,18 @@ import MarkAsDoneIssueModal from "../modal/mark-as-done-issue-modal";
 
 interface ReviewIssueDrawerProps {
   data: Issue;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function ReviewIssueDrawer({ data }: ReviewIssueDrawerProps) {
+export default function ReviewIssueDrawer({
+  data,
+  open,
+  onOpenChange,
+}: ReviewIssueDrawerProps) {
   return (
-    <Drawer>
-      <DrawerTrigger asChild>
-        <div className="p-4 border-[1px] border-input border-dashed rounded-md flex flex-row items-center justify-between">
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">
-              {`ISSUE-${generateIdNumber(data.id)}`}
-            </p>
-            <p>{data.title}</p>
-            <p className="text-xs text-muted-foreground">
-              {formatDistanceToNow(new Date(data.createdAt), {
-                addSuffix: true,
-              })}
-            </p>
-          </div>
-        </div>
-      </DrawerTrigger>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerTrigger asChild></DrawerTrigger>
       <DrawerContent className="min-h-[80vh]">
         <DrawerHeader className="flex flex-row items-center gap-4">
           <div

@@ -22,6 +22,7 @@ import ReviewHistoryModal from "@/components/modal/review-history-modal";
 import ShortcutCommands from "@/components/core/shortcut-commands";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Logo from "@/components/core/logo";
+import ReviewTaskDrawer from "@/components/drawer/review-task-drawer";
 
 export const sessionSchema = z.object({
   userId: z.string(),
@@ -32,7 +33,7 @@ export const sessionSchema = z.object({
 
 export type Session = z.infer<typeof sessionSchema>;
 
-type SessionResponse = {
+export type SessionResponse = {
   payload: Session;
 };
 
@@ -90,6 +91,7 @@ function DasboardLayoutRouteComponent() {
             <ReviewActivityModal />
             <ReviewRequestAccessModal />
             <ReviewHistoryModal />
+            <ReviewTaskDrawer />
             <ShortcutCommands />
           </Suspense>
         </div>

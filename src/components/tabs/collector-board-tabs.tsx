@@ -1,105 +1,37 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import useIssue from "@/queries/use-issue";
-import {
-  CheckCircle2,
-  CircleAlert,
-  GitPullRequest,
-  ListCheck,
-  Loader2,
-  PackageOpen,
-  XCircle,
-} from "lucide-react";
-import ReviewIssueDrawer from "../drawer/review-issue-drawer";
-import { useState } from "react";
-import type { Issue } from "@/lib/types";
+import { CircleAlert, ListCheck, Trash } from "lucide-react";
+import IssueTab from "./issue-tab";
+import useTrashbin from "@/queries/use-trashbin";
+import TrashbinTab from "./trashbin-tab";
+import useTask from "@/queries/use-task";
+import TaskTab from "./task-tab";
+import { useSessionStore } from "@/store/use-session-store";
 
-function IssueTab() {
-  const { getIssues } = useIssue();
-  const { data, isLoading } = getIssues;
-  const [selectedStatus, setSelectedStatus] = useState<Issue[number]>("open");
-
-  if (!data || isLoading) {
-    return (
-      <TabsContent value="tab-3">
-        <p className="text-muted-foreground p-4 text-center text-xs">
-          Loading issues...
-        </p>
-      </TabsContent>
-    );
-  }
-
-  const filteredIssues = data.filter(
-    (issue) =>
-      issue.status.toLowerCase() === selectedStatus.toLowerCase() &&
-      issue.category === "trashbin",
-  );
-
-  return (
-    <TabsContent value="tab-3" className="pb-20">
-      <div className="flex flex-col gap-2">
-        {filteredIssues.map((issue) => (
-          <ReviewIssueDrawer data={issue} key={issue.id} />
-        ))}
-        {filteredIssues.length === 0 && (
-          <p className="text-muted-foreground p-4 text-center text-xs">
-            No issues found for this status.
-          </p>
-        )}
-      </div>
-
-      <div
-        className="fixed bottom-0 left-0 p-4 w-full flex flex-row items-center justify-evenly
-          bg-background/40 backdrop-blur-xl backdrop-filter text-muted-foreground z-50 text-sm"
-      >
-        <button
-          className="flex flex-col items-center gap-1"
-          onClick={() => setSelectedStatus("open")}
-        >
-          <GitPullRequest
-            className={selectedStatus === "open" ? "text-primary" : ""}
-          />
-          <p className={selectedStatus === "open" ? "text-primary" : ""}>
-            Open
-          </p>
-        </button>
-        <button
-          className="flex flex-col items-center gap-1"
-          onClick={() => setSelectedStatus("in-progress")}
-        >
-          <Loader2
-            className={selectedStatus === "in-progress" ? "text-primary" : ""}
-          />
-          <p className={selectedStatus === "in-progress" ? "text-primary" : ""}>
-            In progress
-          </p>
-        </button>
-        <button
-          className="flex flex-col items-center gap-1"
-          onClick={() => setSelectedStatus("resolved")}
-        >
-          <CheckCircle2
-            className={selectedStatus === "resolved" ? "text-primary" : ""}
-          />
-          <p className={selectedStatus === "resolved" ? "text-primary" : ""}>
-            Resolved
-          </p>
-        </button>
-        <button
-          className="flex flex-col items-center gap-1"
-          onClick={() => setSelectedStatus("closed")}
-        >
-          <XCircle
-            className={selectedStatus === "closed" ? "text-primary" : ""}
-          />
-          <p className={selectedStatus === "closed" ? "text-primary" : ""}>
-            Closed
-          </p>
-        </button>
-      </div>
-    </TabsContent>
-  );
-}
 export default function CollectorBoardTabs() {
+  const { session } = useSessionStore();
+  const { getIssues } = useIssue();
+  const { getTrashbins } = useTrashbin();
+  const { getTasks } = useTask();
+
+  const isTaskLoading = getTasks.isLoading;
+  const isTrashbinLoading = getTrashbins.isLoading;
+  const isIssueLoading = getIssues.isLoading;
+
+  const tasksCount =
+    getTasks.data?.filter((task) => task.status === "pending").length || 0;
+  const trashbinsCount =
+    getTrashbins.data?.filter(
+      (trashbin) => !trashbin.isCollected && trashbin.isOperational,
+    ).length || 0;
+  const issuesCount =
+    getIssues.data?.filter(
+      (issue) => issue.category === "trashbin" && issue.status === "open",
+    ).length || 0;
+
+  const assignedTasks =
+    getTasks.data?.filter((task) => task.assignedTo === session?.userId) || [];
+
   return (
     <Tabs defaultValue="tab-1" className="w-full">
       <TabsList className="bg-transparent flex flex-row w-full justify-evenly overflow-y-auto">
@@ -109,42 +41,40 @@ export default function CollectorBoardTabs() {
         >
           <ListCheck />
           Tasks
-          <div className="bg-muted rounded-full px-1.5 py-0.5">
-            <p className="text-xs">10</p>
-          </div>
+          {tasksCount > 0 && (
+            <div className="bg-muted rounded-full min-w-[20px] h-[20px] flex items-center justify-center">
+              <p className="text-xs">{tasksCount}</p>
+            </div>
+          )}
         </TabsTrigger>
         <TabsTrigger
           value="tab-2"
           className="p-4 data-[state=active]:bg-muted data-[state=active]:shadow-none"
         >
-          <PackageOpen />
-          Collections
-          <div className="bg-muted rounded-full px-1.5 py-0.5">
-            <p className="text-xs">10</p>
-          </div>
+          <Trash />
+          Trashbins
+          {trashbinsCount > 0 && (
+            <div className="bg-muted rounded-full min-w-[20px] h-[20px] flex items-center justify-center">
+              <p className="text-xs">{trashbinsCount}</p>
+            </div>
+          )}
         </TabsTrigger>
         <TabsTrigger
           value="tab-3"
-          className="p-4 data-[state=active]:bg-muted data-[state=active]:shadow-none"
+          className="p-4 flex flex-row items gap-1 data-[state=active]:bg-muted data-[state=active]:shadow-none"
         >
           <CircleAlert />
           Issues
-          <div className="bg-muted rounded-full px-1.5 py-0.5">
-            <p className="text-xs">10</p>
-          </div>
+          {issuesCount > 0 && (
+            <div className="bg-muted rounded-full min-w-[20px] h-[20px] flex items-center justify-center">
+              <p className="text-xs">{issuesCount}</p>
+            </div>
+          )}
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="tab-1">
-        <p className="text-muted-foreground p-4 text-center text-xs">
-          Content for Tab 1
-        </p>
-      </TabsContent>
-      <TabsContent value="tab-2">
-        <p className="text-muted-foreground p-4 text-center text-xs">
-          Content for Tab 2
-        </p>
-      </TabsContent>
-      <IssueTab />
+      <TaskTab data={assignedTasks} isLoading={isTaskLoading} />
+      <TrashbinTab data={getTrashbins.data} isLoading={isTrashbinLoading} />
+      <IssueTab data={getIssues.data} isLoading={isIssueLoading} />
     </Tabs>
   );
 }

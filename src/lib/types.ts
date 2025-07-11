@@ -24,6 +24,8 @@ export interface BaseModalProps<T> {
   action: ActionType;
 }
 
+export type TaskStatus = "pending" | "in-progress" | "done";
+
 export type Issue = "open" | "closed" | "in-progress" | "resolved";
 
 export type ActionIcon = Record<ActionType, LucideIcon>;

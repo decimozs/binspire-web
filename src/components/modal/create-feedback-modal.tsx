@@ -19,12 +19,14 @@ import { Label } from "../ui/label";
 import { useId } from "react";
 import { Button } from "../ui/button";
 import DynamicTextArea from "../core/dynamic-textarea";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function CreateFeedbackModal() {
   const id = useId();
   const { createIssue } = useIssue();
   const isPending = createIssue.isPending;
   const { session } = useSessionStore();
+  const isMobile = useIsMobile();
 
   const defaultValues: CreateIssue = {
     title: "",
@@ -48,6 +50,84 @@ export default function CreateFeedbackModal() {
       formApi.reset();
     },
   });
+
+  if (isMobile) {
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <Send />
+              Feedback
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader className="flex flex-row gap-4 items-start">
+            <div
+              className="flex size-11 shrink-0 items-center justify-center rounded-full border"
+              aria-hidden="true"
+            >
+              <Send className="opacity-80" size={23} />
+            </div>
+            <div className="flex flex-col text-left">
+              <div className="flex flex-col text-left gap-1">
+                <DialogTitle>Feedback</DialogTitle>
+                <DialogDescription>
+                  Create feedback for the team
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <form
+            className="space-y-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit();
+            }}
+          >
+            <form.Field name="title">
+              {(f) => (
+                <>
+                  <div className="*:not-first:mt-2">
+                    <Label htmlFor={`${id}-email`}>Title</Label>
+                    <div className="relative">
+                      <Input
+                        id={`${id}-email`}
+                        placeholder="Enter your title"
+                        value={f.state.value}
+                        onChange={(e) => f.handleChange(e.target.value)}
+                        aria-invalid={f.state.meta.errors.length > 0}
+                      />
+                    </div>
+                    <FormFieldError field={f} />
+                  </div>
+                </>
+              )}
+            </form.Field>
+            <form.Field
+              name="description"
+              children={(f) => {
+                return <DynamicTextArea f={f} label="Description" />;
+              }}
+            />
+            <Button type="submit" className="w-full" disabled={isPending}>
+              {isPending && (
+                <LoaderCircleIcon
+                  className="-ms-1 animate-spin"
+                  size={16}
+                  aria-hidden="true"
+                />
+              )}
+              Send Feedback
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog>
