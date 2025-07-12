@@ -14,6 +14,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Link } from "@tanstack/react-router";
 
@@ -31,6 +32,7 @@ export default function NavMain({
     }[];
   }[];
 }) {
+  const { setOpenMobile } = useSidebar();
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -59,7 +61,10 @@ export default function NavMain({
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <Link to={subItem.url}>
+                            <Link
+                              to={subItem.url}
+                              onClick={() => setOpenMobile(false)}
+                            >
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>
