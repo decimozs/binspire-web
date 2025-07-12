@@ -272,7 +272,6 @@ export default function ReviewTrashbinModal() {
             <IdToggle id={tTrashbinId} />
           </div>
           <OperationalStatusBadge isOperational={data.isOperational} />
-          <p>Is collected: {String(data.isCollected)}</p>
         </div>
 
         <Separator />
