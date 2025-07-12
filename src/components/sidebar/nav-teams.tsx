@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Shield, Truck } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,28 +13,31 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import useUser from "@/queries/use-user";
 
 export default function NavTeams() {
   const { isMobile } = useSidebar();
+  const { getUsers } = useUser();
+  const { data, isLoading } = getUsers;
 
-  const teams = [
-    {
-      name: "Admin Team",
-      logo: Shield,
-      role: "admin",
-      plan: "Pro",
-    },
-    {
-      name: "Collector Team",
-      logo: Truck,
-      role: "collector",
-      plan: "Basic",
-    },
-  ];
+  if (!data || isLoading) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton size="lg" disabled>
+            Loading teams...
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
 
-  const [activeTeam, setActiveTeam] = React.useState(teams[0]);
-
-  if (!activeTeam) return null;
+  const activeAdmins = data.filter(
+    (i) => i.role === "admin" && i.isOnline && !i.isArchive,
+  ).length;
+  const activeCollectors = data.filter(
+    (i) => i.role === "collector" && i.isOnline && !i.isArchive,
+  ).length;
 
   return (
     <SidebarMenu>
@@ -78,19 +80,20 @@ export default function NavTeams() {
             <DropdownMenuLabel className="text-muted-foreground text-xs">
               Active Teams
             </DropdownMenuLabel>
-            {teams.map((team, index) => (
-              <DropdownMenuItem
-                key={team.name}
-                onClick={() => setActiveTeam(team)}
-                className="gap-2 p-2"
-              >
-                <div className="flex size-6 items-center justify-center rounded-md border">
-                  <team.logo className="size-3.5 shrink-0" />
-                </div>
-                {team.name}
-                <DropdownMenuShortcut>{index + 1}</DropdownMenuShortcut>
-              </DropdownMenuItem>
-            ))}
+            <DropdownMenuItem className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border">
+                <Shield className="size-3.5 shrink-0" />
+              </div>
+              Admin
+              <DropdownMenuShortcut>{activeAdmins}</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="gap-2 p-2">
+              <div className="flex size-6 items-center justify-center rounded-md border">
+                <Truck className="size-3.5 shrink-0" />
+              </div>
+              Collector
+              <DropdownMenuShortcut>{activeCollectors}</DropdownMenuShortcut>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
