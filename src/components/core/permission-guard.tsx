@@ -3,23 +3,24 @@ import type { ReactNode } from "react";
 
 interface PermissionGuardProps {
   children: ReactNode;
-  allowed?: string[];
+  allowedPermissions?: string[];
+  allowedRole?: string;
   excludeIf?: boolean;
 }
 
 export default function PermissionGuard({
-  allowed = ["superuser", "editor"],
+  allowedPermissions = ["superuser", "editor"],
+  allowedRole = "admin",
   excludeIf = false,
   children,
 }: PermissionGuardProps) {
   const { session } = useSessionStore();
 
-  const isCollector = session?.role === "collector";
-
   const hasPermission =
     session?.permission &&
-    isCollector &&
-    allowed.includes(session.permission) &&
+    session?.role &&
+    allowedPermissions.includes(session.permission) &&
+    session.role === allowedRole &&
     !excludeIf;
 
   if (!hasPermission) return null;

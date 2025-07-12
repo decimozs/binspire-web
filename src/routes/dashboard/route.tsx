@@ -23,6 +23,7 @@ import ShortcutCommands from "@/components/core/shortcut-commands";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Logo from "@/components/core/logo";
 import ReviewTaskDrawer from "@/components/drawer/review-task-drawer";
+import NotificationSheet from "@/components/sheet/notification-sheet";
 
 export const sessionSchema = z.object({
   userId: z.string(),
@@ -74,13 +75,18 @@ function DasboardLayoutRouteComponent() {
     <SidebarProvider>
       <DashboardSidebar />
       <SidebarInset>
-        <header className="sticky top-0 z-50 bg-background flex h-16 shrink-0 items-center gap-2 border-b px-4">
-          <SidebarTrigger />
-          <Separator
-            orientation="vertical"
-            className="mr-2 data-[orientation=vertical]:h-4"
-          />
-          <SidebarBreadcrumbs />
+        <header className="sticky top-0 z-50 bg-background flex h-16 shrink-0 items-center justify-between border-b px-4">
+          <div className="flex items-center gap-2 flex-row">
+            <SidebarTrigger />
+            <Separator
+              orientation="vertical"
+              className="mr-2 data-[orientation=vertical]:h-4"
+            />
+            <SidebarBreadcrumbs />
+          </div>
+          <div>
+            <NotificationSheet isHeader={true} />
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           <Suspense fallback={<Loading type="screen" />}>

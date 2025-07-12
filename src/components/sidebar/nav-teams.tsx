@@ -18,24 +18,12 @@ import useUser from "@/queries/use-user";
 export default function NavTeams() {
   const { isMobile } = useSidebar();
   const { getUsers } = useUser();
-  const { data, isLoading } = getUsers;
+  const { data } = getUsers;
 
-  if (!data || isLoading) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton size="lg" disabled>
-            Loading teams...
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    );
-  }
-
-  const activeAdmins = data.filter(
+  const activeAdmins = data?.filter(
     (i) => i.role === "admin" && i.isOnline && !i.isArchive,
   ).length;
-  const activeCollectors = data.filter(
+  const activeCollectors = data?.filter(
     (i) => i.role === "collector" && i.isOnline && !i.isArchive,
   ).length;
 

@@ -14,7 +14,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardMapRouteImport } from './routes/dashboard/map'
 import { Route as DashboardIssuesRouteImport } from './routes/dashboard/issues'
 import { Route as DashboardHistoryRouteImport } from './routes/dashboard/history'
-import { Route as DashboardCollectorBoardRouteImport } from './routes/dashboard/collector-board'
 import { Route as DashboardBoardRouteImport } from './routes/dashboard/board'
 import { Route as DashboardAnalyticsRouteImport } from './routes/dashboard/analytics'
 import { Route as DashboardActivityRouteImport } from './routes/dashboard/activity'
@@ -50,11 +49,6 @@ const DashboardIssuesRoute = DashboardIssuesRouteImport.update({
 const DashboardHistoryRoute = DashboardHistoryRouteImport.update({
   id: '/history',
   path: '/history',
-  getParentRoute: () => DashboardRouteRoute,
-} as any)
-const DashboardCollectorBoardRoute = DashboardCollectorBoardRouteImport.update({
-  id: '/collector-board',
-  path: '/collector-board',
   getParentRoute: () => DashboardRouteRoute,
 } as any)
 const DashboardBoardRoute = DashboardBoardRouteImport.update({
@@ -126,7 +120,6 @@ export interface FileRoutesByFullPath {
   '/dashboard/activity': typeof DashboardActivityRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/board': typeof DashboardBoardRoute
-  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
   '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
@@ -145,7 +138,6 @@ export interface FileRoutesByTo {
   '/dashboard/activity': typeof DashboardActivityRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/board': typeof DashboardBoardRoute
-  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
   '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
@@ -165,7 +157,6 @@ export interface FileRoutesById {
   '/dashboard/activity': typeof DashboardActivityRoute
   '/dashboard/analytics': typeof DashboardAnalyticsRoute
   '/dashboard/board': typeof DashboardBoardRoute
-  '/dashboard/collector-board': typeof DashboardCollectorBoardRoute
   '/dashboard/history': typeof DashboardHistoryRoute
   '/dashboard/issues': typeof DashboardIssuesRoute
   '/dashboard/map': typeof DashboardMapRoute
@@ -186,7 +177,6 @@ export interface FileRouteTypes {
     | '/dashboard/activity'
     | '/dashboard/analytics'
     | '/dashboard/board'
-    | '/dashboard/collector-board'
     | '/dashboard/history'
     | '/dashboard/issues'
     | '/dashboard/map'
@@ -205,7 +195,6 @@ export interface FileRouteTypes {
     | '/dashboard/activity'
     | '/dashboard/analytics'
     | '/dashboard/board'
-    | '/dashboard/collector-board'
     | '/dashboard/history'
     | '/dashboard/issues'
     | '/dashboard/map'
@@ -224,7 +213,6 @@ export interface FileRouteTypes {
     | '/dashboard/activity'
     | '/dashboard/analytics'
     | '/dashboard/board'
-    | '/dashboard/collector-board'
     | '/dashboard/history'
     | '/dashboard/issues'
     | '/dashboard/map'
@@ -278,13 +266,6 @@ declare module '@tanstack/react-router' {
       path: '/history'
       fullPath: '/dashboard/history'
       preLoaderRoute: typeof DashboardHistoryRouteImport
-      parentRoute: typeof DashboardRouteRoute
-    }
-    '/dashboard/collector-board': {
-      id: '/dashboard/collector-board'
-      path: '/collector-board'
-      fullPath: '/dashboard/collector-board'
-      preLoaderRoute: typeof DashboardCollectorBoardRouteImport
       parentRoute: typeof DashboardRouteRoute
     }
     '/dashboard/board': {
@@ -371,7 +352,6 @@ interface DashboardRouteRouteChildren {
   DashboardActivityRoute: typeof DashboardActivityRoute
   DashboardAnalyticsRoute: typeof DashboardAnalyticsRoute
   DashboardBoardRoute: typeof DashboardBoardRoute
-  DashboardCollectorBoardRoute: typeof DashboardCollectorBoardRoute
   DashboardHistoryRoute: typeof DashboardHistoryRoute
   DashboardIssuesRoute: typeof DashboardIssuesRoute
   DashboardMapRoute: typeof DashboardMapRoute
@@ -385,7 +365,6 @@ const DashboardRouteRouteChildren: DashboardRouteRouteChildren = {
   DashboardActivityRoute: DashboardActivityRoute,
   DashboardAnalyticsRoute: DashboardAnalyticsRoute,
   DashboardBoardRoute: DashboardBoardRoute,
-  DashboardCollectorBoardRoute: DashboardCollectorBoardRoute,
   DashboardHistoryRoute: DashboardHistoryRoute,
   DashboardIssuesRoute: DashboardIssuesRoute,
   DashboardMapRoute: DashboardMapRoute,

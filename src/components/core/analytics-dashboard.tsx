@@ -8,7 +8,7 @@ import { useQueryState } from "nuqs";
 function AdminAnalytics() {
   return (
     <div className="w-full grid grid-cols-1 gap-4">
-      <ViewSummaryChart />
+      <h1>admin analytics</h1>
     </div>
   );
 }

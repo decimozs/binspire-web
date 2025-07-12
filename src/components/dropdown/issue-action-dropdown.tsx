@@ -4,13 +4,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DeleteModal } from "../modal/delete-modal";
 import { ActionsDropdown } from "../core/actions-dropdown";
-import { useSessionStore } from "@/store/use-session-store";
 import type { Issue } from "@/schemas/issue-schema";
 import useIssue from "@/queries/use-issue";
 import { generateIdNumber } from "@/lib/utils";
 import { UpdateModal } from "../modal/update-modal";
 import { Eye } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import PermissionGuard from "../core/permission-guard";
 
 interface IssueActionDropdownProps {
   data: Issue;
@@ -27,7 +27,6 @@ export function IssueActionDropdown({ data }: IssueActionDropdownProps) {
     name: `ISSUE-${generatedNumber}`,
     ...items,
   };
-  const { session } = useSessionStore();
   const isUpdating = updateIssue.isPending;
   const isDeleting = deleteIssue.isPending;
 
@@ -49,34 +48,33 @@ export function IssueActionDropdown({ data }: IssueActionDropdownProps) {
 
   return (
     <ActionsDropdown>
-      {session?.permission &&
-        ["superuser", "editor"].includes(session.permission) && (
-          <>
-            <DropdownMenuItem
-              onSelect={(e) => e.preventDefault()}
-              onClick={handleSetParams}
-            >
-              <Eye />
-              Review
-            </DropdownMenuItem>
-            <UpdateModal
-              data={tData}
-              buttonType="dropdown"
-              action={data.isArchive ? "restore" : "archive"}
-              onUpdate={() => handleArchive(id)}
-              isPending={isUpdating}
-              resourceType="issue"
-            />
-            <DropdownMenuSeparator />
-            <DeleteModal
-              data={tData}
-              buttonType="dropdown"
-              onDelete={handleDelete}
-              isPending={isDeleting}
-              resourceType="issue"
-            />
-          </>
-        )}
+      <DropdownMenuItem
+        onSelect={(e) => e.preventDefault()}
+        onClick={handleSetParams}
+      >
+        <Eye />
+        Review
+      </DropdownMenuItem>
+      <PermissionGuard>
+        <>
+          <UpdateModal
+            data={tData}
+            buttonType="dropdown"
+            action={data.isArchive ? "restore" : "archive"}
+            onUpdate={() => handleArchive(id)}
+            isPending={isUpdating}
+            resourceType="issue"
+          />
+          <DropdownMenuSeparator />
+          <DeleteModal
+            data={tData}
+            buttonType="dropdown"
+            onDelete={handleDelete}
+            isPending={isDeleting}
+            resourceType="issue"
+          />
+        </>
+      </PermissionGuard>
     </ActionsDropdown>
   );
 }

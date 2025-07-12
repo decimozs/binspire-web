@@ -273,10 +273,6 @@ export const adminSidebarData = {
           url: "/dashboard/user/management",
         },
         {
-          title: "Roles & Permissions",
-          url: "/dashboard/user/roles-and-permissions",
-        },
-        {
           title: "Requests Access",
           url: "/dashboard/user/requests-access",
         },
@@ -318,7 +314,7 @@ export const collectorSidebarData = {
         },
         {
           title: "Board",
-          url: "/dashboard/collector-board",
+          url: "/dashboard/board",
         },
       ],
     },
