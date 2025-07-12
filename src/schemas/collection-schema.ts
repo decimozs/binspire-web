@@ -4,6 +4,7 @@ import { insertExcludedFields } from "@/lib/utils";
 
 export const collectionSchema = z.object({
   trashbinId: z.string().min(1, "Trashbin ID is required"),
+  collectedBy: z.string().min(1, "Collected by is required"),
   weightLevel: z.string().refine((val) => !isNaN(parseFloat(val)), {
     message: "Weight must be a valid number",
   }),

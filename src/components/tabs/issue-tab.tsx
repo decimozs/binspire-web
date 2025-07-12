@@ -6,6 +6,7 @@ import type { Issue } from "@/schemas/issue-schema";
 import { generateIdNumber } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import { useSessionStore } from "@/store/use-session-store";
 
 interface IssueTabProps {
   data?: Issue[];
@@ -15,6 +16,7 @@ interface IssueTabProps {
 export default function IssueTab({ data, isLoading }: IssueTabProps) {
   const [, setIssueId] = useQueryState("issue_id");
   const [, setViewIssue] = useQueryState("view_issue", parseAsBoolean);
+  const { session } = useSessionStore();
   const [selectedStatus, setSelectedStatus] =
     useState<IssueStatus[number]>("open");
 
@@ -42,7 +44,7 @@ export default function IssueTab({ data, isLoading }: IssueTabProps) {
     .filter(
       (issue) =>
         issue.status.toLowerCase() === selectedStatus.toLowerCase() &&
-        issue.category === "trashbin",
+        issue.assignedTo === session?.userId,
     )
     .sort(
       (a, b) =>

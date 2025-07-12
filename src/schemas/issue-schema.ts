@@ -10,6 +10,7 @@ export const issueSchema = z
     description: z.string().min(1, "Description is required"),
     status: z.enum(["open", "in-progress", "resolved", "closed"]),
     category: z.string().min(1, "Category is required"),
+    assignedTo: z.string().optional(),
     referenceId: z.string().nullable().optional(),
     priority: z.enum(["low", "medium", "high"]),
     isArchive: z.boolean(),
