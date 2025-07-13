@@ -6,9 +6,13 @@ import ViewSummaryChart from "../charts/view-summary-chart";
 import { useQueryState } from "nuqs";
 
 function AdminAnalytics() {
+  const [chart] = useQueryState("chart", {
+    defaultValue: "collection",
+  });
+
   return (
-    <div className="w-full grid grid-cols-1 gap-4">
-      <h1>admin analytics</h1>
+    <div className="w-full grid grid-cols-1 gap-4 flex-1 min-h-0">
+      {chart === "collection" && <CollectionSummaryChart />}
     </div>
   );
 }
@@ -17,6 +21,7 @@ function CollectorAnalytics() {
   const [chart] = useQueryState("chart", {
     defaultValue: "collection",
   });
+
   return (
     <div className="w-full grid grid-cols-1 gap-4">
       {chart === "collection" && <CollectionSummaryChart />}

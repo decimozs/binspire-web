@@ -6,10 +6,10 @@ import { DeleteModal } from "../modal/delete-modal";
 import type { RequestAccess } from "@/schemas/request-access-schema";
 import { ActionsDropdown } from "../core/actions-dropdown";
 import { UpdateModal } from "../modal/update-modal";
-import { useSessionStore } from "@/store/use-session-store";
 import useRequestAccess from "@/queries/use-request-access";
 import { Eye } from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
+import PermissionGuard from "../core/permission-guard";
 
 interface RequestAccessActionsDropdownProps {
   data: RequestAccess;
@@ -18,7 +18,6 @@ interface RequestAccessActionsDropdownProps {
 export function RequestAccessActionsDropdown({
   data,
 }: RequestAccessActionsDropdownProps) {
-  const { session } = useSessionStore();
   const [, setRequestAccessId] = useQueryState("request_access_id");
   const [, setViewRequestAccess] = useQueryState(
     "view_request_access",
@@ -57,25 +56,22 @@ export function RequestAccessActionsDropdown({
         <Eye />
         Review
       </DropdownMenuItem>
-      {session?.permission &&
-        ["superuser", "editor"].includes(session.permission) && (
-          <>
-            <UpdateModal
-              data={data}
-              buttonType="dropdown"
-              action={isArchived}
-              onUpdate={handleArchive}
-              isPending={isUpdating}
-            />
-            <DropdownMenuSeparator />
-            <DeleteModal
-              data={data}
-              buttonType="dropdown"
-              onDelete={handleDelete}
-              isPending={isDeleting}
-            />
-          </>
-        )}
+      <PermissionGuard>
+        <UpdateModal
+          data={data}
+          buttonType="dropdown"
+          action={isArchived}
+          onUpdate={handleArchive}
+          isPending={isUpdating}
+        />
+        <DropdownMenuSeparator />
+        <DeleteModal
+          data={data}
+          buttonType="dropdown"
+          onDelete={handleDelete}
+          isPending={isDeleting}
+        />
+      </PermissionGuard>
     </ActionsDropdown>
   );
 }

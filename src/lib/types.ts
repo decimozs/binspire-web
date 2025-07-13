@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { permissionValues, roleValues, statusValues } from "./constants";
+import type { Session } from "@/routes/dashboard/route";
 
 export type BaseResponse<T> = {
   status: boolean;
@@ -69,4 +70,21 @@ export interface MapLayer {
   layer: string;
   layerImage: string;
   name: string;
+}
+
+export interface TrendResult {
+  message: string;
+  icon: LucideIcon;
+}
+
+export type Timeframe = "daily" | "weekly" | "monthly" | "yearly" | "overall";
+
+export interface FilterTimeframeProps {
+  value: string;
+  onChange: (value: Timeframe) => void;
+}
+
+export interface ChartProps<T> {
+  data: T[];
+  session?: Session | null;
 }

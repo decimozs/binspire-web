@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Marker, useMap } from "react-map-gl/maplibre";
+import { useMap } from "react-map-gl/maplibre";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -8,15 +8,15 @@ import {
 } from "@/components/ui/tooltip";
 import { Locate, LocateOff } from "lucide-react";
 import { INITIAL_VIEW_STATE } from "@/lib/constants";
+import { useUserLocationStore } from "@/store/user-user-location";
+import { useSessionStore } from "@/store/use-session-store";
 
 export default function UserLocationTracking() {
+  const { session } = useSessionStore();
   const { current: map } = useMap();
-  const [userLocation, setUserLocation] = useState<{
-    lat: number;
-    lng: number;
-  } | null>(null);
   const [isTracking, setIsTracking] = useState(false);
   const watchIdRef = useRef<number | null>(null);
+  const setUserLocation = useUserLocationStore((state) => state.setLocation);
 
   const startTracking = () => {
     if (!navigator.geolocation) {
@@ -27,7 +27,8 @@ export default function UserLocationTracking() {
     watchIdRef.current = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        setUserLocation({ lat: latitude, lng: longitude });
+        const newLocation = { lat: latitude, lng: longitude };
+        setUserLocation(newLocation);
 
         map?.jumpTo({
           center: [longitude, latitude],
@@ -72,28 +73,20 @@ export default function UserLocationTracking() {
     };
   }, []);
 
-  return (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button size="icon" onClick={toggleTracking} className="mb-4">
-            {isTracking ? <LocateOff /> : <Locate />}
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent align="center" side="left">
-          <p>{isTracking ? "Stop Tracking" : "Track Location"}</p>
-        </TooltipContent>
-      </Tooltip>
+  if (session?.role === "admin") {
+    return null;
+  }
 
-      {userLocation && (
-        <Marker
-          longitude={userLocation.lng}
-          latitude={userLocation.lat}
-          anchor="center"
-        >
-          <div className="bg-blue-600 h-4 w-4 rounded-full border-2 border-white" />
-        </Marker>
-      )}
-    </>
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button size="icon" onClick={toggleTracking} className="mb-4">
+          {isTracking ? <LocateOff /> : <Locate />}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent align="center" side="left">
+        <p>{isTracking ? "Stop Tracking" : "Track Location"}</p>
+      </TooltipContent>
+    </Tooltip>
   );
 }

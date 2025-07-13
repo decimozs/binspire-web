@@ -246,10 +246,6 @@ export const adminSidebarData = {
           url: "/dashboard/analytics",
         },
         {
-          title: "Board",
-          url: "/dashboard/board",
-        },
-        {
           title: "Issues",
           url: "/dashboard/issues",
         },
@@ -341,9 +337,10 @@ export const getActionContent = (
   data: { id: string; name?: string }[],
   resourceType: ResourceType = "request",
 ) => {
-  const isBatch = Array.isArray(data);
-  const count = isBatch ? data.length : 1;
-  const name = isBatch ? "" : `"${(data as { name: string }).name}"`;
+  console.log(data);
+  const isBatch = data.length > 1;
+  const count = data.length;
+  const name = !isBatch ? `"${data[0].name}"` : "";
 
   const resourceLabel = (plural = false) => {
     const map: Record<ResourceType, string> = {

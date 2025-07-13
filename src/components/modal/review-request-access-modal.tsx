@@ -18,8 +18,58 @@ import { IdToggle } from "../core/id-toggle";
 import useRequestAccess from "@/queries/use-request-access";
 import PermissionGuard from "../core/permission-guard";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { generateIdNumber } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { permissionColorMap, permissionIconMap } from "@/lib/constants";
+
+const permissionRoles = ["viewer", "editor", "superuser"] as const;
+type Permission = (typeof permissionRoles)[number];
+
+interface SelectPermissionProps {
+  value: Permission;
+  onChange: (value: Permission) => void;
+}
+
+export function SelectPermission({ value, onChange }: SelectPermissionProps) {
+  const id = useId();
+
+  return (
+    <div className="*:not-first:mt-2">
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger
+          id={id}
+          className="h-auto text-left [&>span]:flex [&>span]:items-center [&>span]:gap-2 border-none"
+        >
+          <SelectValue placeholder="Select permission role" />
+        </SelectTrigger>
+        <SelectContent align="start">
+          {permissionRoles.map((permission) => {
+            const Icon = permissionIconMap[permission];
+            const color = permissionColorMap[permission];
+
+            return (
+              <SelectItem key={permission} value={permission}>
+                <div
+                  className={`flex items-center gap-2 ${color} rounded-full px-2 py-1 text-sm`}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="capitalize">{permission}</span>
+                </div>
+              </SelectItem>
+            );
+          })}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
 
 export default function ReviewRequestAccessModal() {
   const { deleteRequestAccess, updateRequestAccess, getRequestAccessById } =
@@ -34,6 +84,8 @@ export default function ReviewRequestAccessModal() {
   const isDeleting = deleteRequestAccess.isPending;
   const isUpdating = updateRequestAccess.isPending;
   const [open, setOpen] = useState(!!viewRequestAccess);
+
+  const [permission, setPermission] = useState<Permission>("viewer");
 
   useEffect(() => {
     setOpen(!!viewRequestAccess);
@@ -52,7 +104,7 @@ export default function ReviewRequestAccessModal() {
   const handleUpdate = async (id: string, data: UpdateRequestAccess) => {
     await updateRequestAccess.mutateAsync({
       id,
-      data: { status: data.status, email: data.email },
+      data: { status: data.status, email: data.email, permission: permission },
     });
   };
 
@@ -114,6 +166,12 @@ export default function ReviewRequestAccessModal() {
           <div className="">
             <p className="text-sm text-muted-foreground mb-2">Requested Role</p>
             <RoleBadge role={data.role} />
+          </div>
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">Permission</p>
+            <div className="w-fit -ml-3">
+              <SelectPermission value={permission} onChange={setPermission} />
+            </div>
           </div>
           <div className="">
             <p className="text-sm text-muted-foreground">Reason</p>

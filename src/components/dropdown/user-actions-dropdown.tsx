@@ -4,12 +4,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { DeleteModal } from "../modal/delete-modal";
 import { ActionsDropdown } from "../core/actions-dropdown";
-import { useSessionStore } from "@/store/use-session-store";
 import type { User } from "@/schemas/user-schema";
 import useUser from "@/queries/use-user";
 import { UpdateModal } from "../modal/update-modal";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { Eye } from "lucide-react";
+import PermissionGuard from "../core/permission-guard";
 
 interface UserActionsDropdownProps {
   data: User;
@@ -18,7 +18,6 @@ interface UserActionsDropdownProps {
 export function UserActionsDropdown({ data }: UserActionsDropdownProps) {
   const [, setUserId] = useQueryState("user_id");
   const [, setViewUser] = useQueryState("view_user", parseAsBoolean);
-  const { session } = useSessionStore();
   const { deleteUser, updateUser } = useUser();
   const isDeleting = deleteUser.isPending;
   const isUpdating = updateUser.isPending;
@@ -48,27 +47,24 @@ export function UserActionsDropdown({ data }: UserActionsDropdownProps) {
         <Eye />
         Review
       </DropdownMenuItem>
-      {session?.permission &&
-        ["superuser", "editor"].includes(session.permission) && (
-          <>
-            <UpdateModal
-              data={data}
-              buttonType="dropdown"
-              action={data.isArchive ? "restore" : "archive"}
-              onUpdate={() => handleArchive(data.id)}
-              isPending={isUpdating}
-              resourceType="user-management"
-            />
-            <DropdownMenuSeparator />
-            <DeleteModal
-              data={data}
-              buttonType="dropdown"
-              onDelete={handleDelete}
-              isPending={isDeleting}
-              resourceType="user-management"
-            />
-          </>
-        )}
+      <PermissionGuard>
+        <UpdateModal
+          data={data}
+          buttonType="dropdown"
+          action={data.isArchive ? "restore" : "archive"}
+          onUpdate={() => handleArchive(data.id)}
+          isPending={isUpdating}
+          resourceType="user-management"
+        />
+        <DropdownMenuSeparator />
+        <DeleteModal
+          data={data}
+          buttonType="dropdown"
+          onDelete={handleDelete}
+          isPending={isDeleting}
+          resourceType="user-management"
+        />
+      </PermissionGuard>
     </ActionsDropdown>
   );
 }

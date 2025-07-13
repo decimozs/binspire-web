@@ -1,16 +1,21 @@
+import { useEffect, useState } from "react";
 import Map, { useControl } from "react-map-gl/maplibre";
 import { MapProvider } from "react-map-gl/maplibre";
-import MapZoom from "../map/map-zoom";
-import ResetMapView from "../map/reset-map-view";
-import { INITIAL_VIEW_STATE } from "@/lib/constants";
-import UserLocationTracking from "../map/current-location";
-import MapLayers from "../map/change-map-layers";
-import { useMapLayerStore } from "@/store/use-map-layers";
-import { useEffect, useState } from "react";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import type { DeckProps, Layer } from "@deck.gl/core";
+import { ScenegraphLayer } from "@deck.gl/mesh-layers";
+
+import MapZoom from "../map/map-zoom";
+import ResetMapView from "../map/reset-map-view";
+import UserLocationTracking from "../map/current-location";
+import MapLayers from "../map/change-map-layers";
+
+import { useMapLayerStore } from "@/store/use-map-layers";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { createTrashbinLayer, createTruckLayer } from "@/lib/layers";
+import { createTrashbinLayer } from "@/lib/layers";
+import { INITIAL_VIEW_STATE } from "@/lib/constants";
+import { useUserLocationStore } from "@/store/user-user-location";
+import { calculateBearing } from "@/lib/utils";
 
 function DeckGLOverlay(props: DeckProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -22,6 +27,10 @@ export default function DashboardMap() {
   const { layer, setLayer, setLayerImage } = useMapLayerStore();
   const [, setTrashbinId] = useQueryState("trashbin_id");
   const [, setViewTrashbin] = useQueryState("view_trashbin", parseAsBoolean);
+  const userLocation = useUserLocationStore((state) => state.location);
+  const previousLocation = useUserLocationStore(
+    (state) => state.previousLocation,
+  );
   const [layers, setLayers] = useState<Layer[]>([]);
 
   useEffect(() => {
@@ -34,8 +43,8 @@ export default function DashboardMap() {
           }
         },
       });
-      const truckLayer = createTruckLayer();
-      setLayers([truckLayer, trashbinLayer]);
+
+      setLayers([trashbinLayer]);
     };
 
     loadLayers();
@@ -49,6 +58,41 @@ export default function DashboardMap() {
       setLayerImage(layerImage);
     }
   }, []);
+
+  useEffect(() => {
+    if (!userLocation) return;
+
+    const bearing =
+      previousLocation && previousLocation !== userLocation
+        ? calculateBearing(previousLocation, userLocation)
+        : 0;
+
+    const userTruckLayer = new ScenegraphLayer({
+      id: "user-truck-layer",
+      data: [userLocation],
+      getPosition: (d) => [d.lng, d.lat],
+      getOrientation: [0, bearing, 90],
+      scenegraph: "/models/truck2.glb",
+      getScale: [0.7, 0.7, 0.7],
+      _lighting: "pbr",
+      pickable: false,
+      transitions: {
+        getPosition: {
+          duration: 500,
+          easing: (t: number) => t,
+        },
+        getOrientation: {
+          duration: 500,
+          easing: (t: number) => t,
+        },
+      },
+    });
+
+    setLayers((prevLayers) => {
+      const filtered = prevLayers.filter((l) => l.id !== "user-truck-layer");
+      return [...filtered, userTruckLayer];
+    });
+  }, [userLocation, previousLocation]);
 
   return (
     <MapProvider>
