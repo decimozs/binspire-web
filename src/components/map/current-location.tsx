@@ -33,8 +33,8 @@ export default function UserLocationTracking() {
         map?.jumpTo({
           center: [longitude, latitude],
           zoom: INITIAL_VIEW_STATE.zoom,
-          bearing: INITIAL_VIEW_STATE.bearing,
-          pitch: INITIAL_VIEW_STATE.pitch,
+          bearing: 0,
+          pitch: 0,
         });
       },
       (error) => {

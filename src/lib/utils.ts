@@ -7,6 +7,8 @@ import { Activity, MinusCircle, TrendingDown, TrendingUp } from "lucide-react";
 import { format, isThisMonth, isThisWeek, isThisYear, isToday } from "date-fns";
 import type { Issue } from "@/schemas/issue-schema";
 import type { Task } from "@/schemas/task-schema";
+import bearing from "@turf/bearing";
+import { point } from "@turf/helpers";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -302,15 +304,7 @@ export function calculateBearing(
   from: { lat: number; lng: number },
   to: { lat: number; lng: number },
 ): number {
-  const lat1 = (from.lat * Math.PI) / 180;
-  const lat2 = (to.lat * Math.PI) / 180;
-  const deltaLng = ((to.lng - from.lng) * Math.PI) / 180;
-
-  const y = Math.sin(deltaLng) * Math.cos(lat2);
-  const x =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLng);
-
-  const bearing = (Math.atan2(y, x) * 180) / Math.PI;
-  return (bearing + 360) % 360; // Normalize
+  const fromPoint = point([from.lng, from.lat]);
+  const toPoint = point([to.lng, to.lat]);
+  return bearing(fromPoint, toPoint);
 }
