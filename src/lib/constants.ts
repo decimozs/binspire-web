@@ -452,7 +452,7 @@ export const entityIconMap: Record<EntityType, LucideIcon> = {
 export const INITIAL_VIEW_STATE = {
   longitude: 121.07618705298137,
   latitude: 14.577577090977371,
-  zoom: 18.5,
+  zoom: 17.5,
   pitch: 70,
   bearing: 10,
 };
