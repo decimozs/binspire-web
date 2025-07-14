@@ -16,14 +16,13 @@ export default function GetDirections({
 }: GetDirectionsProps) {
   const setUserLocation = useUserLocationStore((state) => state.setLocation);
   const [, setTrashbinId] = useQueryState("trashbin_id");
+  const [, setCollectionStatus] = useQueryState("collection_status");
   const [viewDirections, setViewDirections] = useQueryState(
     "view_directions",
     parseAsBoolean,
   );
   const setDirectionData = useDirectionStore((state) => state.setDirectionData);
-
   const { getDirections } = useDirection();
-
   const handleSetDirections = () => {
     if (!data) {
       return;
@@ -52,6 +51,7 @@ export default function GetDirections({
                 setDirectionData(directionData);
                 setViewDirections(true);
                 setTrashbinId(data.id);
+                setCollectionStatus("in-progress");
               }, 300);
             },
             onError: (error) => {

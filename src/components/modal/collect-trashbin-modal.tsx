@@ -56,6 +56,8 @@ export default function CollectTrashbinModal({
   const clearDirectionsData = useDirectionStore(
     (state) => state.clearDirectionData,
   );
+  const [collectionStatus, setCollectionStatus] =
+    useQueryState("collection_status");
 
   const query = trashbinId && !data ? getTrashbinById(trashbinId) : null;
 
@@ -64,6 +66,22 @@ export default function CollectTrashbinModal({
     if (query?.data) return query.data;
     return undefined;
   }, [data, query?.data]);
+
+  const handleResetView = () => {
+    setViewDirections(null);
+    setTrashbinId(null);
+    clearDirectionsData();
+    setCollectionStatus(null);
+    setTimeout(() => {
+      map?.flyTo({
+        center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
+        zoom: INITIAL_VIEW_STATE.zoom,
+        bearing: INITIAL_VIEW_STATE.bearing,
+        pitch: INITIAL_VIEW_STATE.pitch,
+        essential: true,
+      });
+    }, 300);
+  };
 
   const handleCollect = async () => {
     if (!trashbinData) return;
@@ -74,21 +92,7 @@ export default function CollectTrashbinModal({
       },
       {
         onSuccess: () => {
-          setViewDirections(null);
-          setTrashbinId(null);
-          clearDirectionsData();
-          setTimeout(() => {
-            map?.flyTo({
-              center: [
-                INITIAL_VIEW_STATE.longitude,
-                INITIAL_VIEW_STATE.latitude,
-              ],
-              zoom: INITIAL_VIEW_STATE.zoom,
-              bearing: INITIAL_VIEW_STATE.bearing,
-              pitch: INITIAL_VIEW_STATE.pitch,
-              essential: true,
-            });
-          }, 300);
+          setCollectionStatus("complete");
         },
       },
     );
@@ -110,6 +114,14 @@ export default function CollectTrashbinModal({
   });
 
   if (!trashbinData) return null;
+
+  if (collectionStatus === "complete") {
+    return (
+      <Button className="w-full" onClick={handleResetView}>
+        Back
+      </Button>
+    );
+  }
 
   return (
     <Dialog>

@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   CircleAlert,
+  CircleCheck,
   CirclePlus,
   Clock,
   Route,
@@ -33,6 +34,7 @@ export default function DirectionGuide() {
     "view_directions",
     parseAsBoolean,
   );
+  const [collectionStatus] = useQueryState("collection_status");
   const [trashbinId, setTrashbinId] = useQueryState("trashbin_id");
   const directionData = useDirectionStore((state) => state.directionData);
   const clearDirectionsData = useDirectionStore(
@@ -78,11 +80,24 @@ export default function DirectionGuide() {
             <ArrowUpRight size={30} className="mt-0.5" />
             <div>
               <div className="flex flex-row items-center gap-3 ml-2">
-                <span className="relative flex size-3">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
-                  <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
-                </span>
-                <p className="text-lg mt-0.5">Navigating to Trashbin</p>
+                {collectionStatus === "in-progress" && (
+                  <>
+                    <span className="relative flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-sky-500"></span>
+                    </span>
+                    <p className="text-lg mt-0.5">Navigating to Trashbin</p>
+                  </>
+                )}
+                {collectionStatus === "complete" && (
+                  <>
+                    <span className="relative flex size-3">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex size-3 rounded-full bg-green-500"></span>
+                    </span>
+                    <p className="text-lg mt-0.5">Collected Successfully</p>
+                  </>
+                )}
               </div>
               <div className="flex flex-row justify-start gap-1 ml-2 mt-0.5 mb-1">
                 <Badge variant="outline">
@@ -94,8 +109,18 @@ export default function DirectionGuide() {
                   ETA: {format(addMinutes(new Date(), durationMinutes), "p")}
                 </Badge>
                 <Badge variant="outline">
-                  <CirclePlus />
-                  In progress
+                  {collectionStatus === "in-progress" && (
+                    <>
+                      <CirclePlus />
+                      In progress
+                    </>
+                  )}
+                  {collectionStatus === "complete" && (
+                    <>
+                      <CircleCheck />
+                      Complete
+                    </>
+                  )}
                 </Badge>
               </div>
             </div>

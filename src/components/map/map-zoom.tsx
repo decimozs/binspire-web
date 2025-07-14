@@ -28,11 +28,7 @@ export default function MapZoom() {
     <div className="flex flex-col gap-2 mb-4">
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            size="icon"
-            onClick={handleZoomIn}
-            variant="glassmorphismOutline"
-          >
+          <Button onClick={handleZoomIn} variant="glassmorphismOutline">
             <Plus />
           </Button>
         </TooltipTrigger>
@@ -42,11 +38,7 @@ export default function MapZoom() {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            size="icon"
-            onClick={handleZoomOut}
-            variant="glassmorphismOutline"
-          >
+          <Button onClick={handleZoomOut} variant="glassmorphismOutline">
             <Minus />
           </Button>
         </TooltipTrigger>

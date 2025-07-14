@@ -82,7 +82,6 @@ export default function UserLocationTracking() {
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          size="icon"
           onClick={toggleTracking}
           className={`${isMobile ? "" : "mb-4"}`}
           variant="glassmorphismOutline"

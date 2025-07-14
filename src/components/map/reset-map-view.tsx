@@ -23,11 +23,7 @@ export default function ResetMapView() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button
-          size="icon"
-          onClick={handleResetMapView}
-          variant="glassmorphismOutline"
-        >
+        <Button onClick={handleResetMapView} variant="glassmorphismOutline">
           <RotateCw />
         </Button>
       </TooltipTrigger>
