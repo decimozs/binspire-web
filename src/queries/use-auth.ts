@@ -35,7 +35,7 @@ export function useCreateAccount() {
     onSuccess: ({ data }) => {
       successSonner(data.message);
       return navigate({
-        to: "/dashboard",
+        to: "/dashboard/map",
       });
     },
   });

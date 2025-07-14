@@ -4,7 +4,7 @@ import { type Verification } from "@/schemas/verification-schema";
 
 export type VerificationResponse = BaseResponse<Verification>;
 
-const apiRoute = "/protected/verifications";
+const apiRoute = "/verifications";
 
 async function getVerificationByToken(token: string) {
   const response = await apiClient.get<VerificationResponse>(
