@@ -51,7 +51,6 @@ export default function ReviewTrashbinModal() {
     parseAsBoolean,
   );
   const [viewDirections] = useQueryState("view_directions", parseAsBoolean);
-
   const { liveData } = useTrashbinLiveStore();
   const currentLiveData = trashbinId ? liveData[trashbinId] : null;
   const { data, isLoading } = getTrashbinById(trashbinId || "");

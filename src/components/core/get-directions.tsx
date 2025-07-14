@@ -4,6 +4,7 @@ import type { Trashbin } from "@/schemas/trashbin-schema";
 import { useUserLocationStore } from "@/store/use-user-location-store";
 import { useDirectionStore } from "@/store/use-direction-store";
 import useDirection from "@/queries/use-direction";
+import { useNavigate } from "@tanstack/react-router";
 
 interface GetDirectionsProps {
   data: Trashbin;
@@ -14,6 +15,7 @@ export default function GetDirections({
   data,
   handleOpenChange,
 }: GetDirectionsProps) {
+  const navigate = useNavigate();
   const setUserLocation = useUserLocationStore((state) => state.setLocation);
   const [, setTrashbinId] = useQueryState("trashbin_id");
   const [, setCollectionStatus] = useQueryState("collection_status");
@@ -53,6 +55,8 @@ export default function GetDirections({
                 setTrashbinId(data.id);
                 setCollectionStatus("in-progress");
               }, 300);
+
+              navigate({ to: "/dashboard/map" });
             },
             onError: (error) => {
               console.error("Failed to fetch directions:", error);

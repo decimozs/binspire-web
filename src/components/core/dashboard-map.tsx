@@ -49,8 +49,7 @@ export default function DashboardMap() {
             setViewTrashbin(true);
           }
         },
-        onlyShowId:
-          viewDirections === true && trashbinId ? trashbinId : undefined,
+        onlyShowId: viewDirections && trashbinId ? trashbinId : undefined,
       });
 
       setLayers((prev) => {
@@ -125,8 +124,17 @@ export default function DashboardMap() {
 
       return [...filtered, routeLayer];
     });
+  }, [viewDirections, directionData]);
 
-    if (!viewDirections || !directionData) return;
+  useEffect(() => {
+    if (
+      !viewDirections ||
+      !directionData ||
+      !mapRef.current ||
+      !directionData.features?.[0]
+    ) {
+      return;
+    }
 
     const coordinates = directionData.features[0].geometry.coordinates;
     const route = lineString(coordinates);
@@ -137,22 +145,22 @@ export default function DashboardMap() {
     const [lng, lat] = centerPoint.geometry.coordinates;
     const screenHeight = window.innerHeight;
 
-    if (mapRef.current && lng && lat) {
-      mapRef.current.flyTo({
-        center: [lng, lat],
-        zoom,
-        bearing: 90,
-        pitch: 45,
-        duration: 1000,
-        padding: {
-          top: screenHeight * 0.1,
-          bottom: screenHeight * 0.4,
-          left: 40,
-          right: 40,
-        },
-      });
-    }
-  }, [viewDirections, directionData]);
+    // Fly to route center
+    mapRef.current.flyTo({
+      center: [lng, lat],
+      zoom,
+      bearing: 90,
+      pitch: 45,
+      duration: 1000,
+      padding: {
+        top: screenHeight * 0.1,
+        bottom: screenHeight * 0.4,
+        left: 40,
+        right: 40,
+      },
+    });
+  }, [mapRef.current, directionData, viewDirections]);
+
   return (
     <MapProvider>
       <Map

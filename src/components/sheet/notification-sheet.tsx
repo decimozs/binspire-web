@@ -46,7 +46,7 @@ export default function NotificationSheet({
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className="w-full">
           <SheetHeader>
             <SheetTitle>System Notifications</SheetTitle>
             <SheetDescription>

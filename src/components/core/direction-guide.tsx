@@ -26,6 +26,7 @@ import useTrashbin from "@/queries/use-trashbin";
 import { generateIdNumber } from "@/lib/utils";
 import { Separator } from "../ui/separator";
 import CancelCollectionModal from "../modal/cancel-collection-modal";
+import { useTrashbinLiveStore } from "@/store/use-live-trashbin-store";
 
 export default function DirectionGuide() {
   const { getTrashbinById } = useTrashbin();
@@ -40,13 +41,16 @@ export default function DirectionGuide() {
   const clearDirectionsData = useDirectionStore(
     (state) => state.clearDirectionData,
   );
-
+  const [, setCollectionStatus] = useQueryState("collection_status");
+  const liveData = useTrashbinLiveStore((state) => state.liveData);
+  const trashbinLive = trashbinId ? liveData[trashbinId] : undefined;
   const { data, isLoading } = getTrashbinById(trashbinId ?? "");
 
   const clearDirections = () => {
     setViewDirections(null);
     setTrashbinId(null);
     clearDirectionsData();
+    setCollectionStatus(null);
     setTimeout(() => {
       map?.flyTo({
         center: [INITIAL_VIEW_STATE.longitude, INITIAL_VIEW_STATE.latitude],
@@ -135,8 +139,8 @@ export default function DirectionGuide() {
                 <div className="flex flex-row items-center gap-2">
                   <CircleAlert size={15} />
                   {isLoading
-                    ? "Loading collecting information..."
-                    : "Collecting Information"}
+                    ? "Loading collection information..."
+                    : "Collection Information"}
                 </div>
               </AccordionTrigger>
               {!data ? (
@@ -158,6 +162,27 @@ export default function DirectionGuide() {
                     <p>Location</p>
                     <p>{data.location}</p>
                   </div>
+                  {trashbinLive ? (
+                    <>
+                      <Separator className="my-2" />
+                      <div className="flex flex-row items-center justify-between">
+                        <p>Waste Level</p>
+                        <p>{trashbinLive.wasteLevel}%</p>
+                      </div>
+                      <div className="flex flex-row items-center justify-between">
+                        <p>Weight Level</p>
+                        <p>{trashbinLive.weightLevel} kg</p>
+                      </div>
+                      <div className="flex flex-row items-center justify-between">
+                        <p>Battery Level</p>
+                        <p>{trashbinLive.batteryLevel}%</p>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-sm italic text-muted-foreground">
+                      No live data available
+                    </p>
+                  )}
                 </AccordionContent>
               )}
             </AccordionItem>
