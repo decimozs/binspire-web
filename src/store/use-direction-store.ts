@@ -3,7 +3,7 @@ import { create } from "zustand";
 
 interface DirectionStore {
   directionData: ORSDirectionsResponse | null;
-  setDirectionData: (data: ORSDirectionsResponse | null) => void;
+  setDirectionData: (data: ORSDirectionsResponse) => void;
   clearDirectionData: () => void;
 }
 
