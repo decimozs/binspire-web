@@ -1,21 +1,24 @@
-import { useEffect, useState } from "react";
-import Map, { useControl } from "react-map-gl/maplibre";
+import { useEffect, useRef, useState } from "react";
+import Map, { useControl, type MapRef } from "react-map-gl/maplibre";
 import { MapProvider } from "react-map-gl/maplibre";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import type { DeckProps, Layer } from "@deck.gl/core";
 import { ScenegraphLayer } from "@deck.gl/mesh-layers";
-
 import MapZoom from "../map/map-zoom";
 import ResetMapView from "../map/reset-map-view";
 import UserLocationTracking from "../map/current-location";
 import MapLayers from "../map/change-map-layers";
-
-import { useMapLayerStore } from "@/store/use-map-layers";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { createTrashbinLayer } from "@/lib/layers";
 import { INITIAL_VIEW_STATE } from "@/lib/constants";
-import { useUserLocationStore } from "@/store/user-user-location";
 import { calculateBearing } from "@/lib/utils";
+import { useMapLayerStore } from "@/store/use-map-layers-store";
+import { useUserLocationStore } from "@/store/use-user-location-store";
+import { useDirectionStore } from "@/store/use-direction-store";
+import { GeoJsonLayer } from "@deck.gl/layers";
+import DirectionGuide from "./direction-guide";
+import { lineString, center as turfCenter } from "@turf/turf";
+import length from "@turf/length";
 
 function DeckGLOverlay(props: DeckProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -25,8 +28,12 @@ function DeckGLOverlay(props: DeckProps) {
 
 export default function DashboardMap() {
   const { layer, setLayer, setLayerImage } = useMapLayerStore();
+  const directionData = useDirectionStore((state) => state.directionData);
+  const mapRef = useRef<MapRef>(null);
+  const [viewDirections] = useQueryState("view_directions", parseAsBoolean);
   const [, setTrashbinId] = useQueryState("trashbin_id");
   const [, setViewTrashbin] = useQueryState("view_trashbin", parseAsBoolean);
+  const [trashbinId] = useQueryState("trashbin_id");
   const userLocation = useUserLocationStore((state) => state.location);
   const previousLocation = useUserLocationStore(
     (state) => state.previousLocation,
@@ -34,7 +41,7 @@ export default function DashboardMap() {
   const [layers, setLayers] = useState<Layer[]>([]);
 
   useEffect(() => {
-    const loadLayers = async () => {
+    const loadTrashbinLayer = async () => {
       const trashbinLayer = await createTrashbinLayer({
         onClick: (info) => {
           if (info.id) {
@@ -42,13 +49,18 @@ export default function DashboardMap() {
             setViewTrashbin(true);
           }
         },
+        onlyShowId:
+          viewDirections === true && trashbinId ? trashbinId : undefined,
       });
 
-      setLayers([trashbinLayer]);
+      setLayers((prev) => {
+        const filtered = prev.filter((l) => l.id !== "bin-layer");
+        return [...filtered, trashbinLayer];
+      });
     };
 
-    loadLayers();
-  }, []);
+    loadTrashbinLayer();
+  }, [viewDirections, trashbinId]);
 
   useEffect(() => {
     const storedLayer = sessionStorage.getItem("mapLayer");
@@ -72,6 +84,7 @@ export default function DashboardMap() {
       data: [userLocation],
       getPosition: (d) => [d.lng, d.lat],
       getOrientation: [0, bearing, 90],
+      sizeScale: 10,
       scenegraph: "/models/truck2.glb",
       getScale: [0.7, 0.7, 0.7],
       _lighting: "pbr",
@@ -94,14 +107,64 @@ export default function DashboardMap() {
     });
   }, [userLocation, previousLocation]);
 
+  useEffect(() => {
+    setLayers((prev) => {
+      const filtered = prev.filter((l) => l.id !== "route-layer");
+
+      if (!viewDirections || !directionData) {
+        return filtered;
+      }
+
+      const routeLayer = new GeoJsonLayer({
+        id: "route-layer",
+        data: directionData,
+        getLineColor: [123, 225, 201],
+        getLineWidth: 10,
+        pickable: false,
+      });
+
+      return [...filtered, routeLayer];
+    });
+
+    if (!viewDirections || !directionData) return;
+
+    const coordinates = directionData.features[0].geometry.coordinates;
+    const route = lineString(coordinates);
+    const totalDistance = length(route);
+    const zoom = totalDistance > 5 ? 13 : 14;
+
+    const centerPoint = turfCenter(directionData);
+    const [lng, lat] = centerPoint.geometry.coordinates;
+    const screenHeight = window.innerHeight;
+
+    if (mapRef.current && lng && lat) {
+      mapRef.current.flyTo({
+        center: [lng, lat],
+        zoom,
+        bearing: 90,
+        pitch: 45,
+        duration: 1000,
+        padding: {
+          top: screenHeight * 0.1,
+          bottom: screenHeight * 0.4,
+          left: 40,
+          right: 40,
+        },
+      });
+    }
+  }, [viewDirections, directionData]);
   return (
     <MapProvider>
       <Map
+        ref={mapRef}
         initialViewState={INITIAL_VIEW_STATE}
         style={{ width: "100%", height: "100%", borderRadius: "1rem" }}
         mapStyle={`https://api.maptiler.com/maps/${layer}/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`}
       >
-        <div className="fixed bottom-8 right-8 flex flex-col gap-2">
+        <DirectionGuide />
+        <div
+          className={`fixed ${viewDirections ? "bottom-24" : "bottom-8"} right-8 flex flex-col gap-2`}
+        >
           <UserLocationTracking />
           <MapZoom />
           <ResetMapView />

@@ -8,7 +8,7 @@ interface MapLayerStore {
 }
 
 export const useMapLayerStore = create<MapLayerStore>((set) => ({
-  layer: "0197d4fd-eaa1-7158-974c-223908408a63",
+  layer: "019806b1-7482-71db-96b3-1ee247f83d51",
   layerImage: "/images/map-layers-1.png",
   setLayer: (layer) => set({ layer: layer }),
   setLayerImage: (image) => set({ layerImage: image }),

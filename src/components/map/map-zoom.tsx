@@ -6,9 +6,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function MapZoom() {
   const { current: map } = useMap();
+  const isMobile = useIsMobile();
 
   const handleZoomIn = () => {
     map?.zoomIn({ essential: true });
@@ -18,11 +20,19 @@ export default function MapZoom() {
     map?.zoomOut({ essential: true });
   };
 
+  if (isMobile) {
+    return null;
+  }
+
   return (
     <div className="flex flex-col gap-2 mb-4">
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button size="icon" onClick={handleZoomIn}>
+          <Button
+            size="icon"
+            onClick={handleZoomIn}
+            variant="glassmorphismOutline"
+          >
             <Plus />
           </Button>
         </TooltipTrigger>
@@ -32,7 +42,11 @@ export default function MapZoom() {
       </Tooltip>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button size="icon" onClick={handleZoomOut}>
+          <Button
+            size="icon"
+            onClick={handleZoomOut}
+            variant="glassmorphismOutline"
+          >
             <Minus />
           </Button>
         </TooltipTrigger>

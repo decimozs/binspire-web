@@ -7,9 +7,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Locate, LocateOff } from "lucide-react";
-import { INITIAL_VIEW_STATE } from "@/lib/constants";
-import { useUserLocationStore } from "@/store/user-user-location";
 import { useSessionStore } from "@/store/use-session-store";
+import { useUserLocationStore } from "@/store/use-user-location-store";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function UserLocationTracking() {
   const { session } = useSessionStore();
@@ -17,6 +17,7 @@ export default function UserLocationTracking() {
   const [isTracking, setIsTracking] = useState(false);
   const watchIdRef = useRef<number | null>(null);
   const setUserLocation = useUserLocationStore((state) => state.setLocation);
+  const isMobile = useIsMobile();
 
   const startTracking = () => {
     if (!navigator.geolocation) {
@@ -32,7 +33,7 @@ export default function UserLocationTracking() {
 
         map?.jumpTo({
           center: [longitude, latitude],
-          zoom: INITIAL_VIEW_STATE.zoom,
+          zoom: 14,
           bearing: 0,
           pitch: 0,
         });
@@ -80,7 +81,12 @@ export default function UserLocationTracking() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button size="icon" onClick={toggleTracking} className="mb-4">
+        <Button
+          size="icon"
+          onClick={toggleTracking}
+          className={`${isMobile ? "" : "mb-4"}`}
+          variant="glassmorphismOutline"
+        >
           {isTracking ? <LocateOff /> : <Locate />}
         </Button>
       </TooltipTrigger>

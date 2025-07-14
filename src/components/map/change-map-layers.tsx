@@ -3,16 +3,18 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useMapLayerStore } from "@/store/use-map-layers";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { mapLayerItems } from "@/lib/constants";
+import { useMapLayerStore } from "@/store/use-map-layers-store";
+import { parseAsBoolean, useQueryState } from "nuqs";
 
 export default function MapLayers() {
   const { setLayer, setLayerImage, layerImage } = useMapLayerStore();
+  const [viewDirections] = useQueryState("view_directions", parseAsBoolean);
 
   const handleSetMapLayer = (layer: string, layerImage: string) => {
     setLayer(layer);
@@ -22,7 +24,9 @@ export default function MapLayers() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="fixed bottom-8 ml-4 cursor-pointer">
+      <DropdownMenuTrigger
+        className={`fixed ${viewDirections ? "bottom-24" : "bottom-8"} ml-4 cursor-pointer`}
+      >
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="w-[90px] h-[90px] rounded-md border-[1px] border-muted">

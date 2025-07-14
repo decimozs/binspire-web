@@ -36,8 +36,8 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import CollectedStatusBadge from "../badge/collected-badge";
-import CollectTrashbinModal from "./collect-trashbin-modal";
 import ReportTrashbinModal from "./report-trashbin-modal";
+import GetDirections from "../core/get-directions";
 
 export default function ReviewTrashbinModal() {
   const { deleteTrashbin, updateTrashbin, getTrashbinById } = useTrashbin();
@@ -240,7 +240,7 @@ export default function ReviewTrashbinModal() {
             )}{" "}
           </div>
           <DrawerFooter>
-            <CollectTrashbinModal data={data} />
+            <GetDirections data={data} handleOpenChange={handleOpenChange} />
             <ReportTrashbinModal />
           </DrawerFooter>
         </DrawerContent>

@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FileText, LoaderCircleIcon } from "lucide-react";
+import { AlertCircle, FileText, LoaderCircleIcon } from "lucide-react";
 import useIssue from "@/queries/use-issue";
 import { useForm } from "@tanstack/react-form";
 import { createIssueSchema, type CreateIssue } from "@/schemas/issue-schema";
@@ -21,7 +21,13 @@ import { useId, useRef } from "react";
 import { Button } from "../ui/button";
 import DynamicTextArea from "../core/dynamic-textarea";
 
-export default function ReportTrashbinModal() {
+interface ReportTrashbinModalProps {
+  type?: "default" | "icon";
+}
+
+export default function ReportTrashbinModal({
+  type = "default",
+}: ReportTrashbinModalProps) {
   const id = useId();
   const { createIssue } = useIssue();
   const isPending = createIssue.isPending;
@@ -55,7 +61,13 @@ export default function ReportTrashbinModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outlineDestructive">Report this trashbin</Button>
+        {type === "default" ? (
+          <Button variant="outlineDestructive">Report this trashbin</Button>
+        ) : (
+          <Button variant="destructive">
+            <AlertCircle />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader className="flex flex-row gap-4 items-start">

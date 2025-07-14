@@ -1,6 +1,13 @@
 import type { LucideIcon } from "lucide-react";
 import type { permissionValues, roleValues, statusValues } from "./constants";
 import type { Session } from "@/routes/dashboard/route";
+import type {
+  FeatureCollection,
+  Feature,
+  Geometry,
+  LineString,
+  BBox,
+} from "geojson";
 
 export type BaseResponse<T> = {
   status: boolean;
@@ -87,4 +94,146 @@ export interface FilterTimeframeProps {
 export interface ChartProps<T> {
   data: T[];
   session?: Session | null;
+}
+
+export interface Direction {
+  profile?: string;
+  start: string;
+  end: string;
+}
+
+export interface GeoJsonResponse {
+  type: string;
+  bbox: number[];
+  features: GeoJsonFeature[];
+  metadata: GeoJsonMetadata;
+}
+
+export interface GeoJsonFeature {
+  bbox: number[];
+  type: string;
+  properties: GeoJsonProperties;
+  geometry: GeoJsonGeometry;
+}
+
+export interface GeoJsonProperties {
+  segments: GeoJsonSegment[];
+  way_points: number[]; // Keeping this snake_case if matching API spec
+  summary: GeoJsonSummary;
+}
+
+export interface GeoJsonSegment {
+  distance: number;
+  duration: number;
+  steps: GeoJsonStep[];
+}
+
+export interface GeoJsonStep {
+  distance: number;
+  duration: number;
+  type: number;
+  instruction: string;
+  name: string;
+  way_points: number[];
+}
+
+export interface GeoJsonSummary {
+  distance: number;
+  duration: number;
+}
+
+export interface GeoJsonGeometry {
+  coordinates: number[][];
+  type: string;
+}
+
+export interface GeoJsonMetadata {
+  attribution: string;
+  service: string;
+  timestamp: number;
+  query: GeoJsonQuery;
+  engine: GeoJsonEngine;
+}
+
+export interface GeoJsonQuery {
+  coordinates: number[][];
+  profile: string;
+  profileName: string;
+  format: string;
+}
+
+export interface GeoJsonEngine {
+  version: string;
+  buildDate: string;
+  graphDate: string;
+  osmDate: string;
+  graphVersion?: string;
+}
+
+export interface GeoJsonErrorResponse {
+  error: GeoJsonError;
+  info: GeoJsonErrorInfo;
+}
+
+export interface GeoJsonError {
+  code: number;
+  message: string;
+}
+
+export interface GeoJsonErrorInfo {
+  engine: GeoJsonEngine;
+  timestamp: number;
+}
+
+export interface ORSDirectionsResponse
+  extends FeatureCollection<Geometry, GeoJsonProperties> {
+  type: "FeatureCollection";
+  features: ORSFeature[];
+  bbox: BBox;
+  metadata: ORSMetadata;
+}
+
+export interface ORSFeature extends Feature<LineString, GeoJsonProperties> {
+  type: "Feature";
+  geometry: LineString;
+  properties: {
+    segments: ORSSegment[];
+    summary: {
+      distance: number;
+      duration: number;
+    };
+    way_points: number[];
+  };
+  bbox: BBox;
+}
+
+export interface ORSSegment {
+  distance: number;
+  duration: number;
+  steps: ORSStep[];
+}
+
+export interface ORSStep {
+  distance: number;
+  duration: number;
+  type: number;
+  instruction: string;
+  name: string;
+  way_points: number[];
+}
+
+export interface ORSMetadata {
+  attribution: string;
+  service: string;
+  timestamp: number;
+  query: {
+    coordinates: number[][];
+    profile: string;
+    format: string;
+  };
+  engine: {
+    version: string;
+    build_date: string;
+    graph_date: string;
+  };
 }

@@ -24,25 +24,29 @@ const tMockTrashbinData = async () => {
 
 export async function createTrashbinLayer({
   onClick,
+  onlyShowId,
 }: {
   onClick: (info: { id: string }) => void;
+  onlyShowId?: string;
 }) {
   const tData = await tMockTrashbinData();
 
-  return new ScenegraphLayer<Map3DLayer>({
+  const filteredData = onlyShowId
+    ? tData.filter((t) => t.id === onlyShowId)
+    : tData;
+
+  return new ScenegraphLayer({
     id: "bin-layer",
-    data: tData,
+    data: filteredData,
     getPosition: (l: Map3DLayer) => l.coordinates,
-    getOrientation: [0, Math.random() * 1, 90],
     scenegraph: "/models/bin.glb",
+    sizeScale: onlyShowId ? 7 : 1,
     getScale: [0.1, 0.1, 0.1],
+    getOrientation: [0, Math.random() * 1, 90],
     _lighting: "pbr",
     pickable: true,
     onClick: (info) => {
-      if (info.object) {
-        const id = info.object.id;
-        onClick({ id });
-      }
+      if (info.object) onClick({ id: info.object.id });
     },
   });
 }
