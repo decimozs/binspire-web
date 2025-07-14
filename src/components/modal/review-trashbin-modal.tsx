@@ -50,6 +50,8 @@ export default function ReviewTrashbinModal() {
     "view_trashbin",
     parseAsBoolean,
   );
+  const [viewDirections] = useQueryState("view_directions", parseAsBoolean);
+
   const { liveData } = useTrashbinLiveStore();
   const currentLiveData = trashbinId ? liveData[trashbinId] : null;
   const { data, isLoading } = getTrashbinById(trashbinId || "");
@@ -64,8 +66,12 @@ export default function ReviewTrashbinModal() {
     setOpen(nextOpen);
     if (!nextOpen) {
       setTimeout(() => {
-        setTrashbinId(null);
-        setViewTrashbin(null);
+        if (viewDirections) {
+          setViewTrashbin(null);
+        } else {
+          setViewTrashbin(null);
+          setTrashbinId(null);
+        }
       }, 300);
     }
   };

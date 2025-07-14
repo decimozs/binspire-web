@@ -1,4 +1,10 @@
-import { ArrowUpRight, Clock, Route, RouteOff } from "lucide-react";
+import {
+  ArrowUpRight,
+  CircleAlert,
+  CirclePlus,
+  Clock,
+  Route,
+} from "lucide-react";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import length from "@turf/length";
 import { lineString } from "@turf/helpers";
@@ -6,11 +12,22 @@ import { useDirectionStore } from "@/store/use-direction-store";
 import { Badge } from "../ui/badge";
 import { useMap } from "react-map-gl/maplibre";
 import { INITIAL_VIEW_STATE } from "@/lib/constants";
-import { Button } from "../ui/button";
 import CollectTrashbinModal from "../modal/collect-trashbin-modal";
 import ReportTrashbinModal from "../modal/report-trashbin-modal";
+import { addMinutes, format } from "date-fns";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import useTrashbin from "@/queries/use-trashbin";
+import { generateIdNumber } from "@/lib/utils";
+import { Separator } from "../ui/separator";
+import CancelCollectionModal from "../modal/cancel-collection-modal";
 
 export default function DirectionGuide() {
+  const { getTrashbinById } = useTrashbin();
   const { current: map } = useMap();
   const [viewDirections, setViewDirections] = useQueryState(
     "view_directions",
@@ -21,6 +38,8 @@ export default function DirectionGuide() {
   const clearDirectionsData = useDirectionStore(
     (state) => state.clearDirectionData,
   );
+
+  const { data, isLoading } = getTrashbinById(trashbinId ?? "");
 
   const clearDirections = () => {
     setViewDirections(null);
@@ -65,24 +84,64 @@ export default function DirectionGuide() {
                 </span>
                 <p className="text-lg mt-0.5">Navigating to Trashbin</p>
               </div>
-              <div className="flex flex-row justify-end gap-1 ml-2 mt-0.5 mb-1">
+              <div className="flex flex-row justify-start gap-1 ml-2 mt-0.5 mb-1">
                 <Badge variant="outline">
                   <Route />
                   {totalDistance} KM
                 </Badge>
                 <Badge variant="outline">
-                  <Clock /> ETA: {durationMinutes.toFixed(2)} minutes
+                  <Clock />
+                  ETA: {format(addMinutes(new Date(), durationMinutes), "p")}
+                </Badge>
+                <Badge variant="outline">
+                  <CirclePlus />
+                  In progress
                 </Badge>
               </div>
             </div>
           </div>
+          <Accordion
+            type="single"
+            collapsible
+            className="w-full px-2 -mt-1 -mb-2"
+          >
+            <AccordionItem value="item-1">
+              <AccordionTrigger>
+                <div className="flex flex-row items-center gap-2">
+                  <CircleAlert size={15} />
+                  {isLoading
+                    ? "Loading collecting information..."
+                    : "Collecting Information"}
+                </div>
+              </AccordionTrigger>
+              {!data ? (
+                <AccordionContent className="flex flex-col gap-4 text-balance">
+                  <p>Loading data...</p>
+                </AccordionContent>
+              ) : (
+                <AccordionContent className="flex flex-col gap-2 text-balance">
+                  <Separator className="mb-2" />
+                  <div className="flex flex-row items-center justify-between">
+                    <p>Trashbin Id</p>
+                    <p>TRASHBIN-{generateIdNumber(data?.id)}</p>
+                  </div>
+                  <div className="flex flex-row items-center justify-between">
+                    <p>Name</p>
+                    <p>{data.name}</p>
+                  </div>
+                  <div className="flex flex-row items-center justify-between">
+                    <p>Location</p>
+                    <p>{data.location}</p>
+                  </div>
+                </AccordionContent>
+              )}
+            </AccordionItem>
+          </Accordion>
         </div>
       </div>
       <div className="absolute bottom-0 left-0 z-50 w-full p-4">
         <div className="w-full flex items-center flex-row gap-2">
-          <Button variant="destructive" onClick={clearDirections}>
-            <RouteOff />
-          </Button>
+          <CancelCollectionModal onCancel={clearDirections} />
           <div className="flex-1">
             <CollectTrashbinModal trashbinId={trashbinId ?? ""} />
           </div>

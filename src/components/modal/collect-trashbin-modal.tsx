@@ -57,10 +57,8 @@ export default function CollectTrashbinModal({
     (state) => state.clearDirectionData,
   );
 
-  // Only call the hook conditionally, but outside of effects
   const query = trashbinId && !data ? getTrashbinById(trashbinId) : null;
 
-  // Fallback logic to use data or fetched query result
   const trashbinData: Trashbin | undefined = useMemo(() => {
     if (data) return data;
     if (query?.data) return query.data;

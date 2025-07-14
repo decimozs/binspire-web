@@ -16,7 +16,7 @@ export default function GetDirections({
 }: GetDirectionsProps) {
   const setUserLocation = useUserLocationStore((state) => state.setLocation);
   const [, setTrashbinId] = useQueryState("trashbin_id");
-  const [, setViewDirections] = useQueryState(
+  const [viewDirections, setViewDirections] = useQueryState(
     "view_directions",
     parseAsBoolean,
   );
@@ -70,6 +70,10 @@ export default function GetDirections({
       },
     );
   };
+
+  if (viewDirections) {
+    return <Button disabled={true}>Navigating</Button>;
+  }
 
   return (
     <Button onClick={handleSetDirections} disabled={getDirections.isPending}>
