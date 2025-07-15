@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { NuqsAdapter } from "nuqs/adapters/react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MqttProvider } from "@/components/provider/mqtt-provider";
+import { WebSocketProvider } from "@/components/provider/websocket-provider";
 
 export const Route = createRootRoute({
   component: RootComponentRoute,
@@ -19,7 +20,9 @@ function RootComponentRoute() {
         <ThemeColorSync />
         <NuqsAdapter>
           <MqttProvider>
-            <Outlet />
+            <WebSocketProvider>
+              <Outlet />
+            </WebSocketProvider>
           </MqttProvider>
         </NuqsAdapter>
       </ThemeProvider>

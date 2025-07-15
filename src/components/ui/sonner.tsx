@@ -336,3 +336,47 @@ export function copiedSonner(message: string) {
     </div>
   ));
 }
+
+export function activeUserSonner(message: string, onViewLog?: () => void) {
+  toast.custom((t) => (
+    <div className="bg-background text-foreground w-full rounded-md border px-4 py-3 shadow-lg sm:w-[var(--width)]">
+      <div className="flex gap-2 items-center">
+        <div className="flex items-center grow gap-3">
+          <span className="relative flex size-3">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex size-3 rounded-full bg-emerald-500"></span>
+          </span>
+          <div className="flex grow justify-between gap-12">
+            <p className="text-sm">{message}</p>
+          </div>
+        </div>
+        {!onViewLog ? (
+          <Button
+            variant="ghost"
+            className="group -my-1.5 -me-2 size-8 shrink-0 p-0 hover:bg-transparent"
+            onClick={() => toast.dismiss(t)}
+            aria-label="Close banner"
+          >
+            <XIcon
+              size={16}
+              className="opacity-60 transition-opacity group-hover:opacity-100"
+              aria-hidden="true"
+            />
+          </Button>
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              toast.dismiss(t);
+              onViewLog();
+            }}
+          >
+            <HistoryIcon size={14} />
+            View Log
+          </Button>
+        )}
+      </div>
+    </div>
+  ));
+}

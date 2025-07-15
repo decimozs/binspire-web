@@ -1,7 +1,10 @@
 import type { Login } from "@/components/form/login-form";
 import type { ResetPassword } from "@/components/form/reset-password-form";
+import { useWebSocket } from "@/components/provider/websocket-provider";
 import { successSonner } from "@/components/ui/sonner";
 import apiClient, { axiosError } from "@/lib/axios";
+import type { BaseResponse } from "@/lib/types";
+import type { Session } from "@/routes/dashboard/route";
 import type { CreateAccountSchema as CreateAccount } from "@/schemas/account-schema";
 import { useSessionStore } from "@/store/use-session-store";
 import { useMutation } from "@tanstack/react-query";
@@ -9,14 +12,26 @@ import { useNavigate } from "@tanstack/react-router";
 
 export function useLogin() {
   const navigate = useNavigate();
+  const { sendMessage } = useWebSocket();
 
   return useMutation({
     mutationFn: async (data: Login) => {
-      return await apiClient.post("/auth/login", data);
+      return await apiClient.post<BaseResponse<Session>>("/auth/login", data);
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
       successSonner(data.message);
+
+      sendMessage(
+        JSON.stringify({
+          type: "login",
+          payload: {
+            userId: data.payload?.userId,
+            role: data.payload?.role,
+          },
+        }),
+      );
+
       return navigate({
         to: "/dashboard/map",
       });
