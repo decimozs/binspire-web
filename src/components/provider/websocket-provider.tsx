@@ -32,7 +32,7 @@ export const WebSocketProvider = ({
   useEffect(() => {
     if (!role) return;
 
-    const ws = new WebSocket(`ws://localhost:8080/api/v1/ws/${role}`);
+    const ws = new WebSocket(`${import.meta.env.VITE_API_WS_URL}/${role}`);
     wsRef.current = ws;
 
     ws.onopen = () => {
