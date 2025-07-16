@@ -36,21 +36,17 @@ export const WebSocketProvider = ({
     wsRef.current = ws;
 
     ws.onopen = () => {
-      console.log(`✅ WebSocket (${role}) connected`);
       setIsConnected(true);
     };
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      console.log("Received data:", data);
-      if (userId && data.userId !== userId) {
+      if (userId && data.userId !== userId && data.type === `${role}_login`) {
         activeUserSonner(`${data.name} is active now`);
       }
-      console.log(`📨 Message from /ws/${role}:`, data);
     };
 
     ws.onclose = () => {
-      console.warn(`⚠️ WebSocket (${role}) disconnected`);
       setIsConnected(false);
     };
 
