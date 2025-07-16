@@ -575,6 +575,7 @@ export const collectionColumns: ColumnDef<Collection>[] = [
     },
   },
   dateColumn("Collected At"),
+  updatedColumn(),
   {
     id: "actions",
     cell: ({ row }) => {

@@ -1,5 +1,4 @@
 import {
-  ArrowUpRight,
   CircleAlert,
   CircleCheck,
   CirclePlus,
@@ -80,8 +79,7 @@ export default function DirectionGuide() {
     <>
       <div className="absolute top-0 left-0 z-50 w-full p-4">
         <div className="bg-background/40 backdrop-blur-sm backdrop-filter p-2 rounded-md border-input border-[1px]">
-          <div className="flex flex-row-reverse justify-between">
-            <ArrowUpRight size={30} className="mt-0.5" />
+          <div className="">
             <div>
               <div className="flex flex-row items-center gap-3 ml-2">
                 {collectionStatus === "in-progress" && (

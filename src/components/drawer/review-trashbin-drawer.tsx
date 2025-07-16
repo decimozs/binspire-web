@@ -1,22 +1,30 @@
 import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import { generateIdNumber } from "@/lib/utils";
+import type { Collection } from "@/schemas/collection-schema";
 import type { Trashbin } from "@/schemas/trashbin-schema";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNowStrict } from "date-fns";
 import { parseAsBoolean, useQueryState } from "nuqs";
 
 interface ReviewTrashbinDrawerProps {
   data: Trashbin;
+  latestCollection?: Collection;
 }
 
 export default function ReviewTrashbinDrawer({
   data,
+  latestCollection,
 }: ReviewTrashbinDrawerProps) {
   const [, setTrashbinId] = useQueryState("trashbin_id");
   const [, setViewTrashbin] = useQueryState("view_trashbin", parseAsBoolean);
+
   const handleSetParams = () => {
     setViewTrashbin(true);
     setTrashbinId(data.id);
   };
+
+  const displayTime = data.isCollected
+    ? (latestCollection?.createdAt ?? data.updatedAt)
+    : (data.scheduledAt ?? data.updatedAt);
 
   return (
     <Drawer>
@@ -29,7 +37,7 @@ export default function ReviewTrashbinDrawer({
             <p>{data.name}</p>
             <p className="text-xs text-muted-foreground">
               {data.isCollected ? "Last collected" : "Scheduled for collection"}{" "}
-              {formatDistanceToNow(new Date(data.createdAt), {
+              {formatDistanceToNowStrict(new Date(displayTime), {
                 addSuffix: true,
               })}
             </p>

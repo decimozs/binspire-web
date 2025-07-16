@@ -23,6 +23,9 @@ import { INITIAL_VIEW_STATE } from "@/lib/constants";
 import { useMap } from "react-map-gl/maplibre";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { useDirectionStore } from "@/store/use-direction-store";
+import useCollection from "@/queries/use-collection";
+import { useSessionStore } from "@/store/use-session-store";
+import { useTrashbinLiveStore } from "@/store/use-live-trashbin-store";
 
 interface CollectTrashbinModalProps {
   data?: Trashbin;
@@ -45,8 +48,10 @@ export default function CollectTrashbinModal({
 }: CollectTrashbinModalProps) {
   const { current: map } = useMap();
   const id = useId();
+  const { session } = useSessionStore();
   const closeRef = useRef<HTMLButtonElement>(null);
   const { getTrashbinById, updateTrashbin } = useTrashbin();
+  const { createCollection } = useCollection();
   const { isPending } = updateTrashbin;
   const [, setViewDirections] = useQueryState(
     "view_directions",
@@ -58,7 +63,8 @@ export default function CollectTrashbinModal({
   );
   const [collectionStatus, setCollectionStatus] =
     useQueryState("collection_status");
-
+  const liveData = useTrashbinLiveStore((state) => state.liveData);
+  const trashbinLive = trashbinId ? liveData[trashbinId] : undefined;
   const query = trashbinId && !data ? getTrashbinById(trashbinId) : null;
 
   const trashbinData: Trashbin | undefined = useMemo(() => {
@@ -88,7 +94,7 @@ export default function CollectTrashbinModal({
     await updateTrashbin.mutateAsync(
       {
         id: trashbinData.id,
-        data: { isCollected: true },
+        data: { isCollected: true, isScheduled: false, scheduledAt: null },
       },
       {
         onSuccess: () => {
@@ -96,6 +102,15 @@ export default function CollectTrashbinModal({
         },
       },
     );
+    await createCollection.mutateAsync({
+      trashbinId: trashbinData.id,
+      collectedBy: session?.userId ?? "",
+      wasteLevel: trashbinLive?.wasteLevel ?? 0,
+      weightLevel: String(trashbinLive?.weightLevel ?? 0),
+      batteryLevel: trashbinLive?.batteryLevel ?? 0,
+      isFull: trashbinLive && trashbinLive.wasteLevel >= 100 ? true : false,
+      isArchive: false,
+    });
   };
 
   const form = useForm({

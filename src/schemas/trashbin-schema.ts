@@ -15,6 +15,10 @@ export const trashinSchema = z.object({
   isOperational: z.boolean().default(false),
   isArchive: z.boolean().default(false),
   isCollected: z.boolean().default(false),
+  isScheduled: z.boolean().default(false),
+  scheduledAt: z.coerce
+    .date({ message: "Scheduled date is required." })
+    .nullable(),
   ...baseSchema.shape,
 });
 

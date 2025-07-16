@@ -10,7 +10,7 @@ import {
 import { z } from "zod/v4";
 import { permissionValues, roleValues } from "@/lib/constants";
 import SidebarBreadcrumbs from "@/components/sidebar/sidebar-breadcrumbs";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import Loading from "@/components/core/loading";
 import DashboardSidebar from "@/components/core/dashboard-sidebar";
 import ReviewTrashbinModal from "@/components/modal/review-trashbin-modal";
@@ -24,6 +24,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Logo from "@/components/core/logo";
 import ReviewTaskDrawer from "@/components/drawer/review-task-drawer";
 import NotificationSheet from "@/components/sheet/notification-sheet";
+import { generateToken, messaging } from "@/lib/firebase";
+import { onMessage } from "firebase/messaging";
 
 export const sessionSchema = z.object({
   userId: z.string(),
@@ -59,6 +61,13 @@ export const Route = createFileRoute("/dashboard")({
 function DasboardLayoutRouteComponent() {
   const { session } = useSessionStore();
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    generateToken();
+    onMessage(messaging, (payload) => {
+      console.log("Message received. ", payload);
+    });
+  }, []);
 
   if (session?.role === "admin" && isMobile) {
     return (
