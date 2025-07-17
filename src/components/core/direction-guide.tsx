@@ -165,15 +165,15 @@ export default function DirectionGuide() {
                       <Separator className="my-2" />
                       <div className="flex flex-row items-center justify-between">
                         <p>Waste Level</p>
-                        <p>{trashbinLive.wasteLevel}%</p>
+                        <p>{trashbinLive.status.wasteLevel}%</p>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <p>Weight Level</p>
-                        <p>{trashbinLive.weightLevel} kg</p>
+                        <p>{trashbinLive.status.weightLevel} kg</p>
                       </div>
                       <div className="flex flex-row items-center justify-between">
                         <p>Battery Level</p>
-                        <p>{trashbinLive.batteryLevel}%</p>
+                        <p>{trashbinLive.status.batteryLevel}%</p>
                       </div>
                     </>
                   ) : (

@@ -130,7 +130,18 @@ export default function ReviewTrashbinModal() {
       if (match) {
         const id = match[1];
         const data = JSON.parse(message.toString());
-        useTrashbinLiveStore.getState().setLiveData(id, data);
+        useTrashbinLiveStore.getState().setLiveData(id, {
+          trashbin: {
+            id,
+            name: data.name ?? "Unknown",
+            location: data.location ?? "Unknown",
+            isOperational: data.isOperational ?? true,
+            isCollected: data.isCollected ?? false,
+            latitude: data.latitude ?? 0,
+            longitude: data.longitude ?? 0,
+          },
+          status: data.status,
+        });
       }
     };
 
@@ -142,6 +153,10 @@ export default function ReviewTrashbinModal() {
       client.unsubscribe("trashbin/+/status");
     };
   }, [client, isConnected]);
+
+  useEffect(() => {
+    console.log("📦 Full liveData store:", liveData);
+  }, [liveData]);
 
   if (!data || isLoading) {
     return (
@@ -216,7 +231,7 @@ export default function ReviewTrashbinModal() {
                       <Waves className="mt-0.5" />
                       <span>Waste Level</span>
                     </div>
-                    <span>{currentLiveData?.wasteLevel}%</span>
+                    <span>{currentLiveData?.status.wasteLevel}%</span>
                   </div>
                 </div>
                 <div className="flex flex-row gap-4 border border-dashed rounded-md p-4">
@@ -225,7 +240,7 @@ export default function ReviewTrashbinModal() {
                       <Weight className="mt-1.5" />
                       <span>Weight Level</span>
                     </div>
-                    <span>{currentLiveData?.weightLevel} kg</span>
+                    <span>{currentLiveData?.status.weightLevel} kg</span>
                   </div>
                 </div>
                 <div className="flex flex-row gap-4 border border-dashed rounded-md p-4">
@@ -234,7 +249,7 @@ export default function ReviewTrashbinModal() {
                       <Battery className="mt-0.5" />
                       <span>Battery Level</span>
                     </div>
-                    <span>{currentLiveData?.batteryLevel}%</span>
+                    <span>{currentLiveData?.status.batteryLevel}%</span>
                   </div>
                 </div>
               </div>
@@ -326,21 +341,21 @@ export default function ReviewTrashbinModal() {
                 <Waves className="mt-0.5" />
                 <div className="flex flex-col gap-2">
                   <span>Waste Level</span>
-                  <span>{currentLiveData?.wasteLevel}%</span>
+                  <span>{currentLiveData.status.wasteLevel}%</span>
                 </div>
               </div>
               <div className="flex flex-row gap-4 border border-dashed rounded-md p-4">
                 <Weight className="mt-1.5" />
                 <div className="flex flex-col gap-2">
                   <span>Weight Level</span>
-                  <span>{currentLiveData?.weightLevel} kg</span>
+                  <span>{currentLiveData?.status.weightLevel} kg</span>
                 </div>
               </div>
               <div className="flex flex-row gap-4 border border-dashed rounded-md p-4">
                 <Battery className="mt-0.5" />
                 <div className="flex flex-col gap-2">
                   <span>Battery Level</span>
-                  <span>{currentLiveData?.batteryLevel}%</span>
+                  <span>{currentLiveData?.status.batteryLevel}%</span>
                 </div>
               </div>
             </div>

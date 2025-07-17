@@ -1,9 +1,24 @@
 import { create } from "zustand";
 
-interface TrashbinLiveData {
+interface TrashbinInfo {
+  id: string;
+  name: string;
+  location: string;
+  isOperational: boolean;
+  isCollected: boolean;
+  latitude: number;
+  longitude: number;
+}
+
+interface TrashbinStatus {
   wasteLevel: number;
   weightLevel: number;
   batteryLevel: number;
+}
+
+interface TrashbinLiveData {
+  trashbin: TrashbinInfo;
+  status: TrashbinStatus;
 }
 
 interface TrashbinLiveState {

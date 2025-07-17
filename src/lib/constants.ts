@@ -337,7 +337,6 @@ export const getActionContent = (
   data: { id: string; name?: string }[],
   resourceType: ResourceType = "request",
 ) => {
-  console.log(data);
   const isBatch = data.length > 1;
   const count = data.length;
   const name = !isBatch ? `"${data[0].name}"` : "";

@@ -105,10 +105,11 @@ export default function CollectTrashbinModal({
     await createCollection.mutateAsync({
       trashbinId: trashbinData.id,
       collectedBy: session?.userId ?? "",
-      wasteLevel: trashbinLive?.wasteLevel ?? 0,
-      weightLevel: String(trashbinLive?.weightLevel ?? 0),
-      batteryLevel: trashbinLive?.batteryLevel ?? 0,
-      isFull: trashbinLive && trashbinLive.wasteLevel >= 100 ? true : false,
+      wasteLevel: trashbinLive?.status.wasteLevel ?? 0,
+      weightLevel: String(trashbinLive?.status.weightLevel ?? 0),
+      batteryLevel: trashbinLive?.status.batteryLevel ?? 0,
+      isFull:
+        trashbinLive && trashbinLive.status.wasteLevel >= 100 ? true : false,
       isArchive: false,
     });
   };
