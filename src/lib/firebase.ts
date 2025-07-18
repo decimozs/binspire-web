@@ -19,18 +19,24 @@ export const firebaseConfig = {
 export const firebase = initializeApp(firebaseConfig);
 export const messaging = getMessaging(firebase);
 
-export const generateToken = async () => {
+export async function generateToken(): Promise<string | null> {
   const permission = await Notification.requestPermission();
   console.log("Notification permission:", permission);
 
   if (permission !== "granted") {
     console.error("Notification permission not granted");
-    return;
+    return null; // <- this is the fix
   }
 
-  const token = await getToken(messaging, {
-    vapidKey:
-      "BMCdLGJ5hslmT0wOAhwPi48yUHgfTzvrXVmgusCTzeBPsUgk0tKVlHNJbTpIwLluo8w7JOrsEws4wSpm01U47k4",
-  });
-  console.log("Firebase token:", token);
-};
+  try {
+    const token = await getToken(messaging, {
+      vapidKey:
+        "BMCdLGJ5hslmT0wOAhwPi48yUHgfTzvrXVmgusCTzeBPsUgk0tKVlHNJbTpIwLluo8w7JOrsEws4wSpm01U47k4",
+    });
+    console.log("Firebase token:", token);
+    return token ?? null; // also handle if token is undefined
+  } catch (error) {
+    console.error("Error getting FCM token:", error);
+    return null;
+  }
+}

@@ -35,8 +35,20 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
-    icon: payload.notification.icon || "https://binspire.app/assets/logo.png",
+    icon: payload.notification.icon,
+    data: {
+      url: payload.fcmOptions.link,
+    },
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close(); // Close the notification
+
+  // Open the URL from the notification's data
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
 });

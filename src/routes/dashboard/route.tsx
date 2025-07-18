@@ -24,8 +24,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import Logo from "@/components/core/logo";
 import ReviewTaskDrawer from "@/components/drawer/review-task-drawer";
 import NotificationSheet from "@/components/sheet/notification-sheet";
-import { generateToken, messaging } from "@/lib/firebase";
-import { onMessage } from "firebase/messaging";
+import { generateToken } from "@/lib/firebase";
+import notificationApi from "@/api/notification-api";
 
 export const sessionSchema = z.object({
   userId: z.string(),
@@ -63,10 +63,27 @@ function DasboardLayoutRouteComponent() {
   const isMobile = useIsMobile();
 
   useEffect(() => {
-    generateToken();
-    onMessage(messaging, (payload) => {
-      console.log("Message received. ", payload);
-    });
+    async function setupFCM() {
+      const token = await generateToken();
+      if (!token || !session?.userId) return;
+
+      try {
+        const existing = await notificationApi.getNotificationByFCMToken(token);
+
+        if (!existing || existing.length === 0) {
+          await notificationApi.createNotificationToken({
+            fcmToken: token,
+          });
+          console.log("New FCM token registered.");
+        } else {
+          console.log("FCM token already registered.");
+        }
+      } catch (error) {
+        console.error("Error checking or creating FCM token:", error);
+      }
+    }
+
+    setupFCM();
   }, []);
 
   if (session?.role === "admin" && isMobile) {
