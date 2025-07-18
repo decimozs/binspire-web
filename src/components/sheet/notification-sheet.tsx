@@ -68,7 +68,7 @@ export default function NotificationSheet({
             Notification
           </DropdownMenuItem>
         </SheetTrigger>
-        <SheetContent>
+        <SheetContent className={isMobile ? "w-full" : ""}>
           <SheetHeader>
             <SheetTitle>System Notifications</SheetTitle>
             <SheetDescription>

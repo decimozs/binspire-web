@@ -19,7 +19,10 @@ export default function CollectorBoardTabs() {
   const isIssueLoading = getIssues.isLoading;
 
   const tasksCount =
-    getTasks.data?.filter((task) => task.status === "pending").length || 0;
+    getTasks.data?.filter(
+      (task) =>
+        task.status === "pending" && task.assignedTo === session?.userId,
+    ).length || 0;
   const trashbinsCount =
     getTrashbins.data?.filter(
       (trashbin) => !trashbin.isCollected && trashbin.isOperational,

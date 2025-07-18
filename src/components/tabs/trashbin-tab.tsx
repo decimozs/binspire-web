@@ -59,7 +59,7 @@ export default function TrashbinTab({ data, isLoading }: TrashbinTabProps) {
     .filter((trashbin) => {
       if (!trashbin.isOperational) return false;
       return selectedStatus === "not-collected"
-        ? !trashbin.isCollected && trashbin.isScheduled
+        ? !trashbin.isCollected && !trashbin.isScheduled
         : trashbin.isCollected &&
             !trashbin.isScheduled &&
             !trashbin.scheduledAt;
