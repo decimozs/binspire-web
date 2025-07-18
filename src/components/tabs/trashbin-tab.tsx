@@ -59,7 +59,7 @@ export default function TrashbinTab({ data, isLoading }: TrashbinTabProps) {
     .filter((trashbin) => {
       if (!trashbin.isOperational) return false;
       return selectedStatus === "not-collected"
-        ? !trashbin.isCollected && !trashbin.isScheduled
+        ? !trashbin.isCollected && trashbin.isScheduled
         : trashbin.isCollected &&
             !trashbin.isScheduled &&
             !trashbin.scheduledAt;
@@ -88,6 +88,8 @@ export default function TrashbinTab({ data, isLoading }: TrashbinTabProps) {
         return dateB - dateA;
       }
     });
+
+  console.log("trashbin data:", filteredTrashbin);
 
   return (
     <TabsContent value="tab-2" className="pb-20">
