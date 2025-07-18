@@ -78,9 +78,7 @@ export default function NavMain({
                                   <span
                                     className={cn(
                                       "text-xl",
-                                      isActive
-                                        ? "text-primary font-semibold"
-                                        : "text-muted-foreground",
+                                      isActive ? "" : "text-muted-foreground",
                                     )}
                                   >
                                     {subItem.title}

@@ -131,15 +131,7 @@ export default function ReviewTrashbinModal() {
         const id = match[1];
         const data = JSON.parse(message.toString());
         useTrashbinLiveStore.getState().setLiveData(id, {
-          trashbin: {
-            id,
-            name: data.name ?? "Unknown",
-            location: data.location ?? "Unknown",
-            isOperational: data.isOperational ?? true,
-            isCollected: data.isCollected ?? false,
-            latitude: data.latitude ?? 0,
-            longitude: data.longitude ?? 0,
-          },
+          trashbin: data.trashbin,
           status: data.status,
         });
       }

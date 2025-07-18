@@ -19,7 +19,10 @@ export const MqttProvider = ({ children }: { children: React.ReactNode }) => {
       {
         username: "binspire",
         password: "@D!QsR.TGxb8PDy",
+        connectTimeout: 5000,
+        reconnectPeriod: 3000,
         rejectUnauthorized: false,
+        keepalive: 30,
       },
     );
 

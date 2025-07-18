@@ -1,14 +1,5 @@
+import type { Trashbin } from "@/schemas/trashbin-schema";
 import { create } from "zustand";
-
-interface TrashbinInfo {
-  id: string;
-  name: string;
-  location: string;
-  isOperational: boolean;
-  isCollected: boolean;
-  latitude: number;
-  longitude: number;
-}
 
 interface TrashbinStatus {
   wasteLevel: number;
@@ -17,7 +8,7 @@ interface TrashbinStatus {
 }
 
 interface TrashbinLiveData {
-  trashbin: TrashbinInfo;
+  trashbin: Trashbin;
   status: TrashbinStatus;
 }
 

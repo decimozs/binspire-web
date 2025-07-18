@@ -19,6 +19,10 @@ import { GeoJsonLayer } from "@deck.gl/layers";
 import DirectionGuide from "./direction-guide";
 import { lineString, center as turfCenter } from "@turf/turf";
 import length from "@turf/length";
+import { useTrashbinLiveStore } from "@/store/use-live-trashbin-store";
+import MapLegend from "../map/map-legend";
+import { bearing } from "@turf/turf";
+import { point } from "@turf/helpers";
 
 function DeckGLOverlay(props: DeckProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -35,6 +39,7 @@ export default function DashboardMap() {
   const [, setViewTrashbin] = useQueryState("view_trashbin", parseAsBoolean);
   const [trashbinId] = useQueryState("trashbin_id");
   const userLocation = useUserLocationStore((state) => state.location);
+  const liveData = useTrashbinLiveStore((state) => state.liveData);
   const previousLocation = useUserLocationStore(
     (state) => state.previousLocation,
   );
@@ -53,13 +58,17 @@ export default function DashboardMap() {
       });
 
       setLayers((prev) => {
-        const filtered = prev.filter((l) => l.id !== "bin-layer");
-        return [...filtered, trashbinLayer];
+        const withoutBinLayers = prev.filter(
+          (l) => !l.id?.startsWith("bin-layer"),
+        );
+        return [...withoutBinLayers, ...trashbinLayer];
       });
     };
 
-    loadTrashbinLayer();
-  }, [viewDirections, trashbinId]);
+    if (Object.keys(liveData).length > 0) {
+      loadTrashbinLayer();
+    }
+  }, [viewDirections, trashbinId, liveData]);
 
   useEffect(() => {
     const storedLayer = sessionStorage.getItem("mapLayer");
@@ -131,7 +140,8 @@ export default function DashboardMap() {
       !viewDirections ||
       !directionData ||
       !mapRef.current ||
-      !directionData.features?.[0]
+      !directionData.features?.[0] ||
+      !userLocation
     ) {
       return;
     }
@@ -145,11 +155,16 @@ export default function DashboardMap() {
     const [lng, lat] = centerPoint.geometry.coordinates;
     const screenHeight = window.innerHeight;
 
-    // Fly to route center
+    const from = point([userLocation?.lng, userLocation?.lat]);
+    const toCoords = coordinates[coordinates.length - 1];
+    const to = point(toCoords);
+
+    const angle = bearing(from, to);
+
     mapRef.current.flyTo({
       center: [lng, lat],
       zoom,
-      bearing: 90,
+      bearing: angle,
       pitch: 45,
       duration: 1000,
       padding: {
@@ -169,6 +184,7 @@ export default function DashboardMap() {
         style={{ width: "100%", height: "100%", borderRadius: "1rem" }}
         mapStyle={`https://api.maptiler.com/maps/${layer}/style.json?key=${import.meta.env.VITE_MAP_TILER_KEY}`}
       >
+        <MapLegend />
         <DirectionGuide />
         <div
           className={`fixed ${viewDirections ? "bottom-24" : "bottom-8"} right-8 flex flex-col gap-2`}
