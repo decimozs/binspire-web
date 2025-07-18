@@ -16,7 +16,9 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export default function NavMain({
   items,
@@ -33,6 +35,73 @@ export default function NavMain({
   }[];
 }) {
   const { setOpenMobile } = useSidebar();
+  const isMobile = useIsMobile();
+  const router = useRouter();
+
+  if (isMobile) {
+    return (
+      <SidebarGroup>
+        <SidebarGroupLabel>Platform</SidebarGroupLabel>
+        <SidebarMenu>
+          {items.map((item) => (
+            <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip={item.title}>
+                  <CollapsibleTrigger asChild>
+                    <p className="cursor-pointer">
+                      <item.icon className="mt-1" />
+                      <span className="text-2xl">{item.title}</span>
+                    </p>
+                  </CollapsibleTrigger>
+                </SidebarMenuButton>
+                {item.items?.length ? (
+                  <>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuAction className="data-[state=open]:rotate-90">
+                        <ChevronRight />
+                        <span className="sr-only">Toggle</span>
+                      </SidebarMenuAction>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub className="flex flex-col gap-2 my-2">
+                        {item.items?.map((subItem) => {
+                          const isActive =
+                            router.state.location.pathname === subItem.url;
+
+                          return (
+                            <SidebarMenuSubItem key={subItem.title}>
+                              <SidebarMenuSubButton asChild>
+                                <Link
+                                  to={subItem.url}
+                                  onClick={() => setOpenMobile(false)}
+                                >
+                                  <span
+                                    className={cn(
+                                      "text-xl",
+                                      isActive
+                                        ? "text-primary font-semibold"
+                                        : "text-muted-foreground",
+                                    )}
+                                  >
+                                    {subItem.title}
+                                  </span>
+                                </Link>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          );
+                        })}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
+                  </>
+                ) : null}
+              </SidebarMenuItem>
+            </Collapsible>
+          ))}
+        </SidebarMenu>
+      </SidebarGroup>
+    );
+  }
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>

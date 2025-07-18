@@ -96,8 +96,8 @@ export default function SettingsModal() {
         <Sheet>
           <SheetTrigger asChild>
             <SidebarMenuButton onClick={() => setOpen(true)}>
-              <Settings2 size={16} />
-              <span>Settings</span>
+              <Settings2 size={16} className="mt-1" />
+              <span className="text-xl">Settings</span>
             </SidebarMenuButton>
           </SheetTrigger>
           <SheetContent className="w-full">

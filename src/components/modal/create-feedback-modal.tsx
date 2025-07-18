@@ -57,8 +57,8 @@ export default function CreateFeedbackModal() {
         <DialogTrigger asChild>
           <SidebarMenuItem>
             <SidebarMenuButton>
-              <Send />
-              Feedback
+              <Send className="mt-1" />
+              <span className="text-xl">Feedback</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </DialogTrigger>

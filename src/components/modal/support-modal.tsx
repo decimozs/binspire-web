@@ -27,8 +27,8 @@ export default function SupportModal() {
         <SheetTrigger asChild>
           <SidebarMenuItem>
             <SidebarMenuButton>
-              <LifeBuoy />
-              Support
+              <LifeBuoy className="mt-1" />
+              <span className="text-xl">Support</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SheetTrigger>
