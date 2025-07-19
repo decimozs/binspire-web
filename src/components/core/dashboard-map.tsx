@@ -11,7 +11,7 @@ import MapLayers from "../map/change-map-layers";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { createTrashbinLayer } from "@/lib/layers";
 import { INITIAL_VIEW_STATE } from "@/lib/constants";
-import { calculateBearing } from "@/lib/utils";
+import { calculateBearing, delay } from "@/lib/utils";
 import { useMapLayerStore } from "@/store/use-map-layers-store";
 import { useUserLocationStore } from "@/store/use-user-location-store";
 import { useDirectionStore } from "@/store/use-direction-store";
@@ -23,6 +23,7 @@ import { useTrashbinLiveStore } from "@/store/use-live-trashbin-store";
 import MapLegend from "../map/map-legend";
 import { bearing } from "@turf/turf";
 import { point } from "@turf/helpers";
+import Loading from "./loading";
 
 function DeckGLOverlay(props: DeckProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
@@ -40,6 +41,8 @@ export default function DashboardMap() {
   const [trashbinId] = useQueryState("trashbin_id");
   const userLocation = useUserLocationStore((state) => state.location);
   const liveData = useTrashbinLiveStore((state) => state.liveData);
+  const [loadingMessage, setLoadingMessage] = useState("Waiting for live data");
+  const [isLoading, setIsLoading] = useState(true);
   const previousLocation = useUserLocationStore(
     (state) => state.previousLocation,
   );
@@ -47,6 +50,7 @@ export default function DashboardMap() {
 
   useEffect(() => {
     const loadTrashbinLayer = async () => {
+      setLoadingMessage("Generating map layers");
       const trashbinLayer = await createTrashbinLayer({
         onClick: (info) => {
           if (info.id) {
@@ -63,10 +67,18 @@ export default function DashboardMap() {
         );
         return [...withoutBinLayers, ...trashbinLayer];
       });
+
+      setLoadingMessage("Loading map");
+      await delay(500);
+      setIsLoading(false);
     };
 
     if (Object.keys(liveData).length > 0) {
-      loadTrashbinLayer();
+      setLoadingMessage("Generating map data...");
+      delay(800).then(() => loadTrashbinLayer());
+    } else {
+      setLoadingMessage("Waiting for live data");
+      setIsLoading(true);
     }
   }, [viewDirections, trashbinId, liveData]);
 
@@ -175,6 +187,10 @@ export default function DashboardMap() {
       },
     });
   }, [mapRef.current, directionData, viewDirections]);
+
+  if (isLoading) {
+    return <Loading type="screen" message={loadingMessage} />;
+  }
 
   return (
     <MapProvider>

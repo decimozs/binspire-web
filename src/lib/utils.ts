@@ -308,3 +308,7 @@ export function calculateBearing(
   const toPoint = point([to.lng, to.lat]);
   return bearing(fromPoint, toPoint);
 }
+
+export function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

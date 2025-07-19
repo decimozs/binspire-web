@@ -4,9 +4,10 @@ type LoadingType = "screen" | "modal";
 
 interface LoadingProps {
   type: LoadingType;
+  message?: string;
 }
 
-export default function Loading({ type }: LoadingProps) {
+export default function Loading({ type, message = "Loading" }: LoadingProps) {
   return (
     <div
       className={`${type === "screen" ? "h-[90vh]" : ""} w-full flex items-center justify-center`}
@@ -17,7 +18,7 @@ export default function Loading({ type }: LoadingProps) {
           size={26}
           aria-hidden="true"
         />
-        <p className="text-sm text-muted-foreground">Loading...</p>
+        <p className="text-sm text-muted-foreground">{message}...</p>
       </div>
     </div>
   );
