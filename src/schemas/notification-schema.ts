@@ -3,6 +3,7 @@ import { baseSchema } from "./base-schema";
 import { insertExcludedFields } from "@/lib/utils";
 
 export const notificationSchema = z.object({
+  userId: z.string().min(1, { message: "User ID is required." }),
   fcmToken: z.string().min(1, { message: "FCM token is required." }),
   ...baseSchema.shape,
 });
