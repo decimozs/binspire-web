@@ -25,7 +25,12 @@ export default function CollectorBoardTabs() {
     ).length || 0;
   const trashbinsCount =
     getTrashbins.data?.filter(
-      (trashbin) => !trashbin.isCollected && trashbin.isOperational,
+      (trashbin) =>
+        !trashbin.isCollected &&
+        trashbin.isOperational &&
+        trashbin.isScheduled &&
+        !trashbin.isArchive &&
+        trashbin.scheduledAt !== null,
     ).length || 0;
   const issuesCount =
     getIssues.data?.filter(
