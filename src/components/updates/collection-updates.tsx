@@ -1,7 +1,7 @@
 import { Activity } from "lucide-react";
 import WasteStatusBadge from "../badge/waste-status-badge";
 import useCollection from "@/queries/use-collection";
-import { generateIdNumber } from "@/lib/utils";
+import { generateIdNumber, getWasteStatus } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 
 export default function CollectionUpdates() {
@@ -46,9 +46,18 @@ export default function CollectionUpdates() {
               </p>
               <div className="flex flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-2">
-                  <WasteStatusBadge status="low" metric="waste" />
-                  <WasteStatusBadge status="high" metric="weight" />
-                  <WasteStatusBadge status="medium" metric="battery" />
+                  <WasteStatusBadge
+                    status={getWasteStatus(collection.wasteLevel)}
+                    metric="waste"
+                  />
+                  <WasteStatusBadge
+                    status={getWasteStatus(Number(collection.weightLevel))}
+                    metric="weight"
+                  />
+                  <WasteStatusBadge
+                    status={getWasteStatus(collection.batteryLevel)}
+                    metric="battery"
+                  />
                 </div>
                 <div>
                   <p className="font-bold">

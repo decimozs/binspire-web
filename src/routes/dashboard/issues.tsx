@@ -7,6 +7,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import issueApi from "@/api/issue-api";
+import Loading from "@/components/core/loading";
 
 const queryClient = new QueryClient();
 
@@ -24,11 +25,7 @@ function IssuesRouteComponent() {
   const { data, isLoading } = useSuspenseQuery(issuesQueryOpts);
 
   if (!data || isLoading) {
-    return (
-      <div>
-        <p>Loading issues...</p>
-      </div>
-    );
+    return <Loading message="Loading issues..." type="screen" />;
   }
 
   return (

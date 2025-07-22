@@ -7,6 +7,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import Loading from "@/components/core/loading";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +22,11 @@ export const Route = createFileRoute("/dashboard/user/requests-access")({
 });
 
 function UserRequestsAccessRouteComponent() {
-  const { data } = useSuspenseQuery(requestAccessQueryOpts);
+  const { data, isLoading } = useSuspenseQuery(requestAccessQueryOpts);
+
+  if (!data || isLoading) {
+    return <Loading message="Loading requests access..." type="screen" />;
+  }
 
   return (
     <div className="w-full">

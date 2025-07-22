@@ -124,7 +124,12 @@ export function ConfirmationModal<T extends { id: string; name?: string }>({
           </div>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline" className="flex-1">
+              <Button
+                type="button"
+                variant="outline"
+                className="flex-1"
+                ref={closeRef}
+              >
                 Cancel
               </Button>
             </DialogClose>
