@@ -77,6 +77,7 @@ export function useLogout() {
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
       useSessionStore.getState().clearSession();
+      localStorage.removeItem("orgId");
       successSonner(data.message);
       return navigate({
         to: "/",
@@ -92,7 +93,6 @@ export function useResetPassword() {
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
-      localStorage.removeItem("orgId");
       successSonner(data.message);
     },
   });
