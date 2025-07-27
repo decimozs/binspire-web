@@ -14,11 +14,16 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import useUser from "@/queries/use-user";
+import useOrg from "@/queries/use-org";
+import { useSessionStore } from "@/store/use-session-store";
 
 export default function NavTeams() {
+  const { session } = useSessionStore();
   const { isMobile } = useSidebar();
   const { getUsers } = useUser();
+  const { getOrgById } = useOrg();
   const { data } = getUsers;
+  const { data: org } = getOrgById(session?.orgId as string);
 
   const activeAdmins = data?.filter(
     (i) => i.role === "admin" && i.isOnline && !i.isArchive,
@@ -54,8 +59,10 @@ export default function NavTeams() {
                 </svg>
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">Arcovia City</span>
-                <span className="truncate text-xs">Binspire</span>
+                <span className="truncate font-medium capitalize">
+                  {org?.name as string}
+                </span>
+                <span className="truncate text-xs mt-1">Binspire</span>
               </div>
             </SidebarMenuButton>
           </DropdownMenuTrigger>

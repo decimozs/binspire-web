@@ -7,6 +7,7 @@ import { NuqsAdapter } from "nuqs/adapters/react";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MqttProvider } from "@/components/provider/mqtt-provider";
 import { WebSocketProvider } from "@/components/provider/websocket-provider";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const Route = createRootRoute({
   component: RootComponentRoute,
@@ -26,6 +27,7 @@ function RootComponentRoute() {
           </MqttProvider>
         </NuqsAdapter>
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryProvider>
   );
 }

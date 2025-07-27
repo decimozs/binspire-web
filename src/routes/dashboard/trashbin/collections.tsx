@@ -7,6 +7,7 @@ import {
   queryOptions,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import NoResultsFound from "@/components/core/no-results-found";
 
 const queryClient = new QueryClient();
 
@@ -21,20 +22,23 @@ export const Route = createFileRoute("/dashboard/trashbin/collections")({
 });
 
 function CollectionsRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(collectionsQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(collectionsQueryOpts);
 
-  if (!data || isLoading) {
+  if (data && data.length === 0) {
     return (
-      <div>
-        <p>Loading collections...</p>
-      </div>
+      <NoResultsFound
+        title="No Collections"
+        description="No waste collection records are available yet. Once a collection is completed, the details will show up here."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
     );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={collectionColumns}
         searchPattern={"id"}
         apiRoute="collections"

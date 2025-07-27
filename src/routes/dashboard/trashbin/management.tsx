@@ -7,6 +7,7 @@ import {
   queryOptions,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import NoResultsFound from "@/components/core/no-results-found";
 
 const queryClient = new QueryClient();
 
@@ -21,20 +22,23 @@ export const Route = createFileRoute("/dashboard/trashbin/management")({
 });
 
 function TrashbinManagagementRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(trashbinsQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(trashbinsQueryOpts);
 
-  if (!data || isLoading) {
+  if (data && data.length === 0) {
     return (
-      <div>
-        <p>Loading trashbins...</p>
-      </div>
+      <NoResultsFound
+        title="No Trashbins"
+        description="No trashbin data is currently available. Connected devices will appear here once they are online and sending updates."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
     );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={trashbinColumns}
         searchPattern={"id"}
         apiRoute="trashbins"

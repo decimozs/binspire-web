@@ -1,4 +1,5 @@
 import activityApi from "@/api/activity-api";
+import NoResultsFound from "@/components/core/no-results-found";
 import { activityColumns } from "@/components/table/columns-table";
 import DataTable from "@/components/table/data-table";
 import {
@@ -21,20 +22,23 @@ export const Route = createFileRoute("/dashboard/activity")({
 });
 
 function ActivityRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(activityQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(activityQueryOpts);
 
-  if (!data || isLoading) {
+  if (data && data.length === 0) {
     return (
-      <div>
-        <p>Loading activities...</p>
-      </div>
+      <NoResultsFound
+        title="No Activities Yet"
+        description="Looks like nothing has happened yet. As new activities take place, they'll show up here."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
     );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={activityColumns}
         searchPattern={"id"}
         apiRoute="activities"

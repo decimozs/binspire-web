@@ -30,6 +30,12 @@ export default function CollectionUpdates() {
         <h1 className="text-xl font-semibold">Recent Updates</h1>
       </div>
 
+      {data.length === 0 && (
+        <p className="text-muted-foreground">
+          No collection updates available.
+        </p>
+      )}
+
       <div className="grow overflow-y-auto flex flex-col gap-4 max-h-[85vh]">
         {[...data]
           .sort(

@@ -7,7 +7,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import Loading from "@/components/core/loading";
+import NoResultsFound from "@/components/core/no-results-found";
 
 const queryClient = new QueryClient();
 
@@ -22,10 +22,19 @@ export const Route = createFileRoute("/dashboard/user/requests-access")({
 });
 
 function UserRequestsAccessRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(requestAccessQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(
+    requestAccessQueryOpts,
+  );
 
-  if (!data || isLoading) {
-    return <Loading message="Loading requests access..." type="screen" />;
+  if (data && data.length === 0) {
+    return (
+      <NoResultsFound
+        title="No Access Requests"
+        description="No requested access at the moment. When someone submits a request, it will appear here for review."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
+    );
   }
 
   return (

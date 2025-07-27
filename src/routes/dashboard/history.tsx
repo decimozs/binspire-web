@@ -1,4 +1,5 @@
 import historyApi from "@/api/history-api";
+import NoResultsFound from "@/components/core/no-results-found";
 import { historyColumns } from "@/components/table/columns-table";
 import DataTable from "@/components/table/data-table";
 import {
@@ -21,20 +22,23 @@ export const Route = createFileRoute("/dashboard/history")({
 });
 
 function HistoryRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(historyQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(historyQueryOpts);
 
-  if (!data || isLoading) {
+  if (data && data.length === 0) {
     return (
-      <div>
-        <p>Loading histories...</p>
-      </div>
+      <NoResultsFound
+        title="No History Found"
+        description="There are currently no activity logs available. Actions performed within the system will be recorded and shown here."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
     );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={historyColumns}
         searchPattern={"id"}
         apiRoute="histories"

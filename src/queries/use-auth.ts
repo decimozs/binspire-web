@@ -13,6 +13,7 @@ import { useNavigate } from "@tanstack/react-router";
 export function useLogin() {
   const navigate = useNavigate();
   const { sendMessage } = useWebSocket();
+  const { setSession } = useSessionStore();
 
   return useMutation({
     mutationFn: async (data: Login) => {
@@ -21,6 +22,17 @@ export function useLogin() {
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
       successSonner(data.message);
+
+      const session = data.payload;
+      const orgId = session?.orgId;
+
+      if (orgId) {
+        localStorage.setItem("orgId", orgId);
+      }
+
+      if (session) {
+        setSession(session);
+      }
 
       sendMessage(
         JSON.stringify({
@@ -80,6 +92,7 @@ export function useResetPassword() {
     },
     onError: (error) => axiosError(error),
     onSuccess: ({ data }) => {
+      localStorage.removeItem("orgId");
       successSonner(data.message);
     },
   });

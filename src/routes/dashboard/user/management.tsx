@@ -7,6 +7,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import NoResultsFound from "@/components/core/no-results-found";
 
 const queryClient = new QueryClient();
 
@@ -21,20 +22,23 @@ export const Route = createFileRoute("/dashboard/user/management")({
 });
 
 function UserManagementRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(userQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(userQueryOpts);
 
-  if (!data || isLoading) {
+  if (data && data.length === 0) {
     return (
-      <div>
-        <p>Loading users...</p>
-      </div>
+      <NoResultsFound
+        title="No Users Found"
+        description="There are no registered users in the system yet. Once users sign up or are added, they will be listed here."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
     );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={userColumns}
         searchPattern={"id"}
         apiRoute="users"

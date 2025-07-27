@@ -7,7 +7,7 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import issueApi from "@/api/issue-api";
-import Loading from "@/components/core/loading";
+import NoResultsFound from "@/components/core/no-results-found";
 
 const queryClient = new QueryClient();
 
@@ -22,16 +22,23 @@ export const Route = createFileRoute("/dashboard/issues")({
 });
 
 function IssuesRouteComponent() {
-  const { data, isLoading } = useSuspenseQuery(issuesQueryOpts);
+  const { data, isFetching, refetch } = useSuspenseQuery(issuesQueryOpts);
 
-  if (!data || isLoading) {
-    return <Loading message="Loading issues..." type="screen" />;
+  if (data && data.length === 0) {
+    return (
+      <NoResultsFound
+        title="No Issues Found"
+        description="There are currently no reported issues. Once new issues are submitted or logged, they will be displayed here."
+        isFetching={isFetching}
+        onRefresh={refetch}
+      />
+    );
   }
 
   return (
     <div className="w-full">
       <DataTable
-        data={data}
+        data={data ?? []}
         columns={issueColumns}
         searchPattern={"id"}
         apiRoute="issues"
